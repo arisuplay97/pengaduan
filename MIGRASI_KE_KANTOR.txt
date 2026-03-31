@@ -1,0 +1,44 @@
+# PANDUAN MIGRASI APLIKASI KE KOMPUTER KANTOR
+
+Untuk memindahkan aplikasi ini ke komputer lain (kantor), ikuti langkah-langkah berikut:
+
+## 1. Persiapan Database (Di Komputer INI)
+1. Buka **Laragon**.
+2. Klik tombol **Database** (akan membuka HeidiSQL).
+3. Cari database yang memiliki ukuran paling besar (Dari gambar Anda, pilih **laravel** karena `pdam_agenda` kosong 0 B).
+4. Klik kanan pada database **laravel** > **Export database as SQL**.
+5. Centang "Create" pada opsi "Database" dan "Table".
+6. Pilih "Insert" pada opsi "Data".
+7. Simpan file sebagai `database_backup.sql` di dalam folder `pdam-agenda` ini.
+
+## 2. Copy File Aplikasi
+1. Salin seluruh folder `pdam-agenda` ini (termasuk folder `vendor`, `node_modules`, dan file `database_backup.sql` yang baru dibuat).
+2. Pindahkan ke Flashdisk atau Google Drive.
+
+---
+
+## 3. Instalasi di Komputer KANTOR
+1. Pastikan komputer kantor sudah terinstall **Laragon** (WAMP/XAMPP juga bisa, tapi Laragon lebih disarankan).
+2. Pindahkan folder `pdam-agenda` ke folder `www` Laragon (biasanya di `C:\laragon\www\`).
+
+## 4. Import Database (Di Komputer KANTOR)
+1. Buka Laragon di komputer kantor > Start All.
+2. Klik tombol **Database** (HeidiSQL).
+3. Buat database baru dengan nama yang SAMA persis seperti di komputer lama (misal: `pdam_agenda`).
+4. File > **Load SQL file...** > Pilih `database_backup.sql` yang ada di folder aplikasi.
+5. Jalankan (Execute) untuk mengimport semua data.
+
+## 5. Konfigurasi Akhir
+1. Buka file `.env` di folder aplikasi.
+2. Pastikan pengaturan database sesuai:
+   ```
+   DB_DATABASE=nama_database_anda
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+   (Sesuaikan password jika ada).
+3. Buka Terminal di folder aplikasi dan jalankan perintah ini (jika gambar tidak muncul):
+   `php artisan storage:link`
+
+## 6. Selesai
+Buka browser dan akses alamat aplikasi (misal: `http://pdam-agenda.test` atau `localhost/pdam-agenda/public`).

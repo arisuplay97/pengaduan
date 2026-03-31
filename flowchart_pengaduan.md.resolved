@@ -1,0 +1,70 @@
+# Alur Sistem Pengaduan PDAM & Penugasan Teknisi
+
+Berikut adalah diagram alir (flowchart) dari sistem pengaduan gangguan yang telah kita bangun, mulai dari pelaporan warga hingga pengerjaan oleh teknisi di lapangan.
+
+```mermaid
+graph TD
+    %% Entitas Utama
+    Warga((Warga / Pelanggan))
+    Admin((Admin / Direksi))
+    Teknisi((Teknisi Lapangan))
+
+    %% Fase 1: Pelaporan
+    Warga -->|1. Buka web /lapor| Form["Isi Form Pengaduan<br>- Data Diri<br>- Jenis Gangguan<br>- Lokasi & GPS"]
+    Form -->|2. Submit| DB[(Database PDAM)]
+    DB -->|3. Generate| Tiket["Tiket Pengaduan<br>Status: PENDING"]
+
+    Tiket -.->|Bisa Lacak| Lacak["Halaman /lacak"]
+    Warga -->|Pantau Status| Lacak
+
+    %% Fase 2: Broadcast Telegram
+    Tiket -->|4. Sistem Mencari Petugas| CekKecamatan{"Cek Kecamatan target"}
+    CekKecamatan -->|5. Cocokkan Data| Brodcast["Bot Telegram Broadcast<br>ke Semua Teknisi di Kecamatan Tersebut"]
+    
+    %% Fase 3: Pengambilan Tugas (Rebutan)
+    Brodcast -->|6. Terima Notif| Teknisi
+    Teknisi -->|7. Klik Ambil Tugas| Webhook["Telegram Webhook<br>Memproses Klaim"]
+
+    Webhook -->|8. Cek Ketersediaan| CekStatus{"Apakah masih PENDING<br>& Belum Diambil?"}
+    
+    CekStatus -->|TIDAK / Diambil orang| Gagal[Kirim Notif Gagal ke Telegram]
+    Gagal -.-> Teknisi
+
+    CekStatus -->|YA / Tersedia| Sukses["Tugas Berhasil Diklaim<br>Status: ON PROGRESS"]
+    Sukses -->|9. Update Database: Assign User| DB
+    Sukses -->|10. Kirim Detail Lokasi & Link Upload| Teknisi
+
+    %% Fase 4: Eksekusi & Command Center
+    DB -->|Real-time| CommandCenter["Map Command Center<br>Titik Merah Berkedip & Garis Merah<br>Ke Lokasi Pelaporan"]
+    Admin -->|Pantau Live| CommandCenter
+
+    %% Fase 5: Penyelesaian
+    Teknisi -->|11. Datang ke Lokasi & Perbaiki| Perbaikan["Kerjakan Gangguan"]
+    Perbaikan -->|12. Klik Link Upload Foto<br>Dari Telegram| UploadForm["Upload Foto Sebelum & Sesudah Penyelesaian"]
+    
+    UploadForm -->|13. Submit| DB2[(Database PDAM)]
+    DB2 -->|14. Update Status| Selesai["Status: SELESAI<br>Waktu & Durasi Dicatat"]
+    
+    Selesai -->|Real-time update| CommandCenter2["Map Command Center<br>Titik Berubah Hijau"]
+    Admin -->|Monitoring Harian| CommandCenter2
+
+    classDef citizen fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef tech fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef admin fill:#eceff1,stroke:#546e7a,stroke-width:2px;
+    classDef system fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px;
+    classDef db fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
+
+    class Warga citizen;
+    class Teknisi tech;
+    class Admin admin;
+    class Form,Lacak,Tiket,Webhook,CekStatus,Sukses,Selesai,UploadForm system;
+    class DB,DB2 db;
+```
+
+## Penjelasan Singkat Tiap Fase
+
+1. **Pelaporan (Warga):** Warga mengisi form aduan dan mengunci koordinat GPS. Sistem menghasilkan Nomor Tiket untuk kelak dilacak oleh warga. Status aduan adalah `PENDING`.
+2. **Distribusi Tugas (Sistem):** Berdasarkan "Kecamatan" yang dipilih warga, sistem akan mencari siapa saja teknisi yang ditugaskan memegang area tersebut. Bot Telegram akan membroadcast notifikasi ke grup/semua teknisi terkait.
+3. **Klaim / Rebutan (Teknisi):** Siapa cepat dia dapat. Teknisi pertama yang menekan tombol **"Ambil Tugas"** di Telegram akan menjadi penanggung jawab tunggal. Teknisi lain yang menekan belakangan akan ditolak sistem. Status berubah menjadi `ON PROGRESS`. Bot akan merespon dengan instruksi GPS Titik Lokasi dan Link Upload khusus.
+4. **Command Center (Admin):** Admin di kantor pusat dapat melihat laporan masuk dan status pengerjaan secara aktual dari Peta Induk (Muncul garis berkedip (Ant-path) yang menghubungkan teknisi dengan titik rusak).
+5. **Penyelesaian:** Teknisi wajib mengupload bukti pekerjaan (Foto Sebelum/Sesudah) melalui tautan web ringan yang diberikan Bot Telegram, tanpa perlu login rumit. Status laporan menjadi `SELESAI` dan titik di peta admin berubah hijau.
