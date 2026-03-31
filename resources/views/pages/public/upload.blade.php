@@ -111,7 +111,7 @@
             </div>
 
             <!-- Upload Form -->
-            <form action="{{ url('/upload/' . $ticketCode) }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+            <form action="{{ request()->fullUrl() }}" method="POST" enctype="multipart/form-data" id="uploadForm">
                 @csrf
                 <input type="hidden" name="latitude" id="latitude">
                 <input type="hidden" name="longitude" id="longitude">

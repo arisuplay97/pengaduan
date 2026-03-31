@@ -15,10 +15,18 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
+                'name' => 'Superadmin',
+                'username' => 'superadmin',
+                'email' => 'superadmin@pdam.go.id',
+                'password' => Hash::make('123456'),
+                'role' => 'superadmin',
+            ],
+            [
                 'name' => 'Administrator',
                 'username' => 'admin',
                 'email' => 'admin@pdam.go.id',
                 'password' => Hash::make('123456'),
+                'role' => 'admin',
             ],
             [
                 'name' => 'Direktur Utama',
