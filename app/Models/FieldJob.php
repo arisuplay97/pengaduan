@@ -30,6 +30,7 @@ class FieldJob extends Model
         'status',
         'latitude',
         'longitude',
+        'estimated_time',
         'started_at',
         'finished_at',
     ];
