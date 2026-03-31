@@ -55,7 +55,17 @@ class UploadController extends Controller
         if (!$job->photo_before) {
             $request->validate([
                 'photo_before'   => 'required|image|max:10240',
-                'estimated_time' => 'required|string|in:Kurang dari 30 Menit,30 Menit - 1 Jam,1 - 2 Jam,2 - 3 Jam,> 3 Jam',
+                'estimated_time' => [
+                    'required',
+                    'string',
+                    \Illuminate\Validation\Rule::in([
+                        'Kurang dari 30 Menit',
+                        '30 Menit - 1 Jam',
+                        '1 - 2 Jam',
+                        '2 - 3 Jam',
+                        '> 3 Jam'
+                    ])
+                ],
                 'latitude'       => 'nullable|numeric',
                 'longitude'      => 'nullable|numeric',
             ], [
