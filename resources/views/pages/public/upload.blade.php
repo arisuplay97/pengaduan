@@ -45,7 +45,10 @@
         .done-card p{font-size:12px;color:#64748b}
         .photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
         .photo-grid img{width:100%;height:120px;object-fit:cover;border-radius:12px;border:2px solid #e2e8f0}
-        .photo-grid .photo-label{font-size:9px;font-weight:700;color:#94a3b8;text-align:center;margin-top:3px}
+        .form-group{margin-bottom:16px;text-align:left}
+        .form-label{display:block;font-size:11px;font-weight:800;color:#64748b;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+        .form-select{width:100%;background:#f8fafc;border:2px solid #e2e8f0;border-radius:14px;padding:12px 14px;font-size:13px;font-weight:700;color:#1e293b;appearance:auto;outline:none;transition:all .3s;font-family:inherit}
+        .form-select:focus{border-color:#0369a1;background:#f0f9ff;box-shadow:0 0 0 4px rgba(3,105,161,.1)}
         @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
     </style>
 </head>
@@ -123,6 +126,19 @@
                     <div class="label">📷 Foto SEBELUM Perbaikan</div>
                     <div class="hint">Tap untuk buka kamera</div>
                     <img id="beforePreview" style="display:none">
+                </div>
+
+                <!-- Estimated Time -->
+                <div class="form-group">
+                    <label class="form-label">⏱️ Estimasi Lama Pengerjaan</label>
+                    <select name="estimated_time" required class="form-select">
+                        <option value="" disabled selected>-- Pilih Perkiraan Waktu --</option>
+                        <option value="Kurang dari 30 Menit">Kurang dari 30 Menit</option>
+                        <option value="30 Menit - 1 Jam">30 Menit - 1 Jam</option>
+                        <option value="1 - 2 Jam">1 - 2 Jam</option>
+                        <option value="2 - 3 Jam">2 - 3 Jam</option>
+                        <option value="> 3 Jam">> 3 Jam</option>
+                    </select>
                 </div>
 
                 <!-- Photo After -->

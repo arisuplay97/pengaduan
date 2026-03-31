@@ -105,6 +105,17 @@ const Track = ({ initialTicket, initialCode }) => {
                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Dilaporkan</p>
                                     <p className="text-sm font-bold text-slate-800">{new Date(ticket.created_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</p>
                                 </div>
+                                {ticket.estimated_time && (
+                                    <div className="col-span-2 bg-sky-50 rounded-2xl p-4 border border-sky-100 relative overflow-hidden">
+                                        <i className="ph-fill ph-stopwatch absolute -right-4 -top-4 text-6xl text-sky-500/10"></i>
+                                        <div className="flex items-center justify-between relative z-10">
+                                            <div>
+                                                <p className="text-[10px] font-bold text-sky-600 uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><i className="ph-fill ph-clock"></i> Lama Pengerjaan Aktual</p>
+                                                <p className="text-sm font-bold text-slate-800">{ticket.estimated_time}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                                 <div className="col-span-2 bg-slate-50 rounded-2xl p-4 border border-slate-100">
                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Alamat</p>
                                     <p className="text-sm font-bold text-slate-800 leading-relaxed">{ticket.address}</p>

@@ -41,20 +41,24 @@ class UploadController extends Controller
         }
 
         $request->validate([
-            'photo_before' => 'required|image|max:10240',
-            'photo_after'  => 'required|image|max:10240',
-            'latitude'     => 'nullable|numeric',
-            'longitude'    => 'nullable|numeric',
+            'photo_before'   => 'required|image|max:10240',
+            'photo_after'    => 'required|image|max:10240',
+            'estimated_time' => 'required|string|in:Kurang dari 30 Menit,30 Menit - 1 Jam,1 - 2 Jam,2 - 3 Jam,> 3 Jam',
+            'latitude'       => 'nullable|numeric',
+            'longitude'      => 'nullable|numeric',
         ], [
-            'photo_before.required' => 'Foto SEBELUM wajib diisi.',
-            'photo_after.required'  => 'Foto SESUDAH wajib diisi.',
-            'photo_before.image'    => 'Foto SEBELUM harus berupa gambar.',
-            'photo_after.image'     => 'Foto SESUDAH harus berupa gambar.',
+            'photo_before.required'   => 'Foto SEBELUM wajib diisi.',
+            'photo_after.required'    => 'Foto SESUDAH wajib diisi.',
+            'photo_before.image'      => 'Foto SEBELUM harus berupa gambar.',
+            'photo_after.image'       => 'Foto SESUDAH harus berupa gambar.',
+            'estimated_time.required' => 'Estimasi waktu pengerjaan wajib dipilih.',
+            'estimated_time.in'       => 'Pilihan estimasi waktu tidak valid.',
         ]);
 
         $teknisiName = $job->user ? $job->user->name : 'Petugas';
         $lat = $request->latitude;
         $lng = $request->longitude;
+        $estimatedTime = $request->estimated_time;
 
         // ── Step 1: Save ORIGINAL photos ───────────────
         $dir = public_path('uploads/jobs');
@@ -92,10 +96,11 @@ class UploadController extends Controller
 
         // ── Step 3: Update DB ──────────────────────────
         $updateData = [
-            'photo_before' => 'uploads/jobs/' . $beforeWmFile,
-            'photo_after'  => 'uploads/jobs/' . $afterWmFile,
-            'status'       => 'selesai',
-            'finished_at'  => now(),
+            'photo_before'   => 'uploads/jobs/' . $beforeWmFile,
+            'photo_after'    => 'uploads/jobs/' . $afterWmFile,
+            'status'         => 'selesai',
+            'finished_at'    => now(),
+            'estimated_time' => $estimatedTime,
         ];
 
         if ($lat && $lng && !$job->latitude) {
