@@ -112,41 +112,83 @@ const Track = ({ initialTicket, initialCode }) => {
                             </div>
 
                             {/* Timeline */}
-                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">Riwayat Penanganan</h3>
+                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i className="ph-bold ph-git-commit"></i> Riwayat Penanganan
+                            </h3>
+                            
                             <div className="relative pl-6 space-y-8">
-                                <div className="absolute left-10 top-2 bottom-2 w-px bg-slate-200"></div>
+                                <div className="absolute left-10 top-2 bottom-2 w-[2px] bg-slate-100 rounded-full"></div>
 
-                                {/* Step 1: Laporan Masuk */}
+                                {/* Step 1: Laporan Terdaftar */}
                                 <div className="relative flex items-start gap-5">
                                     <div className="w-8 h-8 rounded-full bg-emerald-100 border-4 border-white shadow-sm flex items-center justify-center shrink-0 relative z-10">
                                         <i className="ph-bold ph-check text-emerald-600 text-sm"></i>
                                     </div>
                                     <div className="pt-1">
-                                        <h4 className="text-sm font-bold text-slate-800">Laporan Diterima</h4>
-                                        <p className="text-xs text-slate-400 mt-1 font-medium">{new Date(ticket.created_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                                        <h4 className="text-sm font-bold text-slate-800">Laporan Terdaftar</h4>
+                                        <p className="text-xs text-slate-400 mt-1 font-medium">Laporan masuk ke sistem dan sedang ditinjau administrasi.</p>
+                                        <p className="text-xs text-slate-400 font-bold mt-1">{new Date(ticket.created_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</p>
                                     </div>
                                 </div>
 
-                                {/* Step 2: Dikerjakan */}
+                                {/* Step 2: Mencari Petugas */}
                                 <div className="relative flex items-start gap-5">
-                                    <div className={`w-8 h-8 rounded-full border-4 border-white shadow-sm flex items-center justify-center shrink-0 relative z-10 ${ticket.started_at ? 'bg-emerald-100 text-emerald-600' : (ticket.status !== 'pending' ? 'bg-amber-100 text-amber-500' : 'bg-slate-100 text-slate-300')}`}>
-                                        {ticket.started_at ? <i className="ph-bold ph-check text-sm"></i> : (ticket.status !== 'pending' ? <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> : <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>)}
+                                    <div className={`w-8 h-8 rounded-full border-4 border-white shadow-sm flex items-center justify-center shrink-0 relative z-10 ${ticket.status !== 'pending' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-500'}`}>
+                                        {ticket.status !== 'pending' ? <i className="ph-bold ph-check text-sm"></i> : <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>}
                                     </div>
                                     <div className="pt-1">
-                                        <h4 className={`text-sm font-bold ${ticket.started_at || ticket.status !== 'pending' ? 'text-slate-800' : 'text-slate-400'}`}>Sedang Diperbaiki</h4>
+                                        <h4 className="text-sm font-bold text-slate-800">Mencari Petugas</h4>
                                         <p className="text-xs text-slate-400 mt-1 font-medium">
-                                            {ticket.started_at ? new Date(ticket.started_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : (ticket.status === 'pending' ? 'Menunggu ketersediaan teknisi...' : 'Teknisi menuju lokasi')}
+                                            {ticket.status === 'pending' ? 'Sistem sedang memanggil teknisi terdekat di wilayah pendaftaran.' : 'Teknisi lapangan telah dikonfirmasi.'}
                                         </p>
                                     </div>
                                 </div>
 
-                                {/* Step 3: Selesai */}
+                                {/* Step 3: Petugas Menuju Lokasi */}
+                                <div className="relative flex items-start gap-5">
+                                    <div className={`w-8 h-8 rounded-full border-4 border-white shadow-sm flex items-center justify-center shrink-0 relative z-10 ${ticket.started_at ? 'bg-emerald-100 text-emerald-600' : (ticket.status !== 'pending' ? 'bg-amber-100 text-amber-500' : 'bg-slate-100 text-slate-300')}`}>
+                                        {ticket.started_at ? <i className="ph-bold ph-check text-sm"></i> : (ticket.status !== 'pending' ? <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span> : <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>)}
+                                    </div>
+                                    <div className="pt-1">
+                                        <h4 className={`text-sm font-bold ${ticket.started_at || ticket.status !== 'pending' ? 'text-slate-800' : 'text-slate-400'}`}>Petugas Menuju Lokasi</h4>
+                                        <p className="text-xs mt-1 font-medium text-slate-400">
+                                            {ticket.started_at 
+                                                ? (ticket.user ? `Teknisi lap. ${ticket.user.name} bergerak ke titik lokasi.` : 'Teknisi dalam perjalanan ke lokasi.') 
+                                                : (ticket.status === 'pending' ? 'Menunggu ketersediaan teknisi...' : 'Teknisi sedang bersiap menuju target.')}
+                                        </p>
+                                        {ticket.started_at && <p className="text-xs text-slate-400 font-bold mt-1">{new Date(ticket.started_at).toLocaleString('id-ID', { timeStyle: 'short' })} WITA</p>}
+                                    </div>
+                                </div>
+
+                                {/* Step 4: Proses Perbaikan */}
+                                <div className="relative flex items-start gap-5">
+                                    <div className={`w-8 h-8 rounded-full border-4 border-white shadow-sm flex items-center justify-center shrink-0 relative z-10 ${ticket.finished_at ? 'bg-emerald-100 text-emerald-600' : (ticket.started_at ? 'bg-amber-100 text-amber-500' : 'bg-slate-100 text-slate-300')}`}>
+                                        {ticket.finished_at ? <i className="ph-bold ph-check text-sm"></i> : (ticket.started_at ? <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span> : <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>)}
+                                    </div>
+                                    <div className="pt-1">
+                                        <h4 className={`text-sm font-bold ${ticket.finished_at || ticket.started_at ? 'text-slate-800' : 'text-slate-400'}`}>Proses Perbaikan</h4>
+                                        <p className="text-xs mt-1 font-medium text-slate-400">
+                                            {ticket.finished_at ? 'Perbaikan di lapangan telah berhasil.' : (ticket.started_at ? 'Teknisi sedang melakukan tindakan penanganan dan perbaikan langsung di titik lokasi.' : 'Menunggu kedatangan teknisi.')}
+                                        </p>
+                                        {ticket.started_at && !ticket.finished_at && (
+                                            <div className="mt-2 inline-flex items-center gap-1.5 bg-sky-50 text-sky-600 px-3 py-1 rounded border border-sky-100/50 flex-wrap">
+                                                <i className="ph-duotone ph-wrench text-sm animate-bounce"></i>
+                                                <span className="text-[10px] uppercase font-bold tracking-wider">Sedang Dikerjakan</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Step 5: Selesai */}
                                 <div className="relative flex items-start gap-5">
                                     <div className={`w-8 h-8 rounded-full border-4 border-white shadow-sm flex items-center justify-center shrink-0 relative z-10 ${ticket.finished_at ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-300'}`}>
-                                        {ticket.finished_at ? <i className="ph-bold ph-seal-check text-base"></i> : <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>}
+                                        {ticket.finished_at ? <i className="ph-bold ph-seal-check text-lg"></i> : <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>}
                                     </div>
                                     <div className="pt-1">
                                         <h4 className={`text-sm font-bold ${ticket.finished_at ? 'text-emerald-600' : 'text-slate-400'}`}>Perbaikan Selesai</h4>
+                                        <p className="text-xs mt-1 font-medium text-slate-400">
+                                            {ticket.finished_at ? 'Terima kasih atas laporan Anda. Dokumen foto teknisi telah diverifikasi.' : 'Menunggu validasi penyelesaian.'}
+                                        </p>
                                         {ticket.finished_at && (
                                             <p className="text-xs text-emerald-500 mt-1 font-bold">
                                                 {new Date(ticket.finished_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}

@@ -114,7 +114,7 @@ class PublicController extends Controller
         $ticketCode = $request->query('kode');
 
         if ($ticketCode) {
-            $ticket = FieldJob::with('kecamatan')
+            $ticket = FieldJob::with(['kecamatan', 'user'])
                 ->where('ticket_code', $ticketCode)
                 ->first();
         }
