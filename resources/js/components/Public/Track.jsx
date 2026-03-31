@@ -105,17 +105,7 @@ const Track = ({ initialTicket, initialCode }) => {
                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Dilaporkan</p>
                                     <p className="text-sm font-bold text-slate-800">{new Date(ticket.created_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</p>
                                 </div>
-                                {ticket.estimated_time && (
-                                    <div className="col-span-2 bg-sky-50 rounded-2xl p-4 border border-sky-100 relative overflow-hidden">
-                                        <i className="ph-fill ph-stopwatch absolute -right-4 -top-4 text-6xl text-sky-500/10"></i>
-                                        <div className="flex items-center justify-between relative z-10">
-                                            <div>
-                                                <p className="text-[10px] font-bold text-sky-600 uppercase tracking-widest mb-1.5 flex items-center gap-1.5"><i className="ph-fill ph-clock"></i> Lama Pengerjaan Aktual</p>
-                                                <p className="text-sm font-bold text-slate-800">{ticket.estimated_time}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
+
                                 <div className="col-span-2 bg-slate-50 rounded-2xl p-4 border border-slate-100">
                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Alamat</p>
                                     <p className="text-sm font-bold text-slate-800 leading-relaxed">{ticket.address}</p>
@@ -128,7 +118,16 @@ const Track = ({ initialTicket, initialCode }) => {
                             </h3>
                             
                             <div className="relative pl-6 space-y-8">
-                                <div className="absolute left-10 top-2 bottom-2 w-[2px] bg-slate-100 rounded-full"></div>
+                                {/* Base line (static) */}
+                                <div className="absolute left-10 top-2 bottom-2 w-[2px] bg-slate-100/80 rounded-full"></div>
+                                
+                                {/* Active progress line (dynamic) */}
+                                <div 
+                                    className="absolute left-10 top-2 w-[2px] bg-emerald-500 rounded-full transition-all duration-1000"
+                                    style={{ 
+                                        height: ticket.finished_at ? '98%' : (ticket.started_at ? '66%' : (ticket.status !== 'pending' ? '40%' : '14%')) 
+                                    }}
+                                ></div>
 
                                 {/* Step 1: Laporan Terdaftar */}
                                 <div className="relative flex items-start gap-5">
@@ -173,8 +172,8 @@ const Track = ({ initialTicket, initialCode }) => {
 
                                 {/* Step 4: Proses Perbaikan */}
                                 <div className="relative flex items-start gap-5">
-                                    <div className={`w-8 h-8 rounded-full border-4 border-white shadow-sm flex items-center justify-center shrink-0 relative z-10 ${ticket.finished_at ? 'bg-emerald-100 text-emerald-600' : (ticket.started_at ? 'bg-amber-100 text-amber-500' : 'bg-slate-100 text-slate-300')}`}>
-                                        {ticket.finished_at ? <i className="ph-bold ph-check text-sm"></i> : (ticket.started_at ? <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span> : <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>)}
+                                    <div className={`w-8 h-8 rounded-full border-4 border-white shadow-md flex items-center justify-center shrink-0 relative z-10 ${ticket.finished_at ? 'bg-emerald-100 text-emerald-600' : (ticket.started_at ? 'bg-red-50 text-red-500 animate-pulse-border' : 'bg-slate-100 text-slate-300')}`}>
+                                        {ticket.finished_at ? <i className="ph-bold ph-check text-sm"></i> : (ticket.started_at ? <span className="w-3 h-3 rounded-full bg-red-600 border-2 border-white shadow-sm glow-red"></span> : <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>)}
                                     </div>
                                     <div className="pt-1">
                                         <h4 className={`text-sm font-bold ${ticket.finished_at || ticket.started_at ? 'text-slate-800' : 'text-slate-400'}`}>Proses Perbaikan</h4>
@@ -182,9 +181,20 @@ const Track = ({ initialTicket, initialCode }) => {
                                             {ticket.finished_at ? 'Perbaikan di lapangan telah berhasil.' : (ticket.started_at ? 'Teknisi sedang melakukan tindakan penanganan dan perbaikan langsung di titik lokasi.' : 'Menunggu kedatangan teknisi.')}
                                         </p>
                                         {ticket.started_at && !ticket.finished_at && (
-                                            <div className="mt-2 inline-flex items-center gap-1.5 bg-sky-50 text-sky-600 px-3 py-1 rounded border border-sky-100/50 flex-wrap">
-                                                <i className="ph-duotone ph-wrench text-sm animate-bounce"></i>
-                                                <span className="text-[10px] uppercase font-bold tracking-wider">Sedang Dikerjakan</span>
+                                            <div className="mt-3 flex flex-col gap-2">
+                                                <div className="inline-flex items-center gap-1.5 bg-red-50 text-red-600 px-3 py-1 rounded-full border border-red-100 w-fit">
+                                                    <i className="ph-duotone ph-wrench text-sm animate-bounce"></i>
+                                                    <span className="text-[10px] uppercase font-bold tracking-wider">Sedang Dikerjakan</span>
+                                                </div>
+                                                {ticket.estimated_time && (
+                                                    <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 w-full max-w-[200px]">
+                                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Estimasi Lama Perbaikan</p>
+                                                        <div className="text-xs font-black text-slate-800 flex items-center gap-1.5">
+                                                            <i className="ph-bold ph-hourglass-high text-red-500"></i>
+                                                            {ticket.estimated_time}
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </div>
@@ -226,6 +236,9 @@ const Track = ({ initialTicket, initialCode }) => {
                 __html: `
                 @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
                 .animate-fade-in-up { animation: fade-in-up 0.5s ease-out forwards; }
+                .glow-red { box-shadow: 0 0 10px rgba(239, 68, 68, 0.8), 0 0 20px rgba(239, 68, 68, 0.4); }
+                @keyframes pulse-border { 0% { border-color: rgba(239, 68, 68, 0.2); } 50% { border-color: rgba(239, 68, 68, 0.6); } 100% { border-color: rgba(239, 68, 68, 0.2); } }
+                .animate-pulse-border { animation: pulse-border 2s infinite; }
             `}} />
         </div>
     );
