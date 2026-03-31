@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('field_jobs', function (Blueprint $table) {
+        Schema::table('jobs_field', function (Blueprint $table) {
             $table->string('estimated_time')->nullable()->after('finished_at');
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('field_jobs', function (Blueprint $table) {
+        Schema::table('jobs_field', function (Blueprint $table) {
             $table->dropColumn('estimated_time');
         });
     }

@@ -113,47 +113,76 @@
                 <span id="gpsText">Mendeteksi lokasi GPS...</span>
             </div>
 
-            <!-- Upload Form -->
-            <form action="{{ request()->fullUrl() }}" method="POST" enctype="multipart/form-data" id="uploadForm">
-                @csrf
-                <input type="hidden" name="latitude" id="latitude">
-                <input type="hidden" name="longitude" id="longitude">
-
-                <!-- Photo Before -->
-                <div class="upload-area" id="beforeBox">
-                    <input type="file" name="photo_before" accept="image/*" capture="camera" required onchange="previewUpload(this, 'beforePreview', 'beforeBox')">
-                    <i class="ph-duotone ph-camera"></i>
-                    <div class="label">📷 Foto SEBELUM Perbaikan</div>
-                    <div class="hint">Tap untuk buka kamera</div>
-                    <img id="beforePreview" style="display:none">
+            @if(!$job->photo_before)
+                <div class="divider"></div>
+                <div class="alert alert-success" style="background:#f0f9ff; color:#0369a1; border-color:#bae6fd;">
+                    <i class="ph-bold ph-info"></i> Tahap 1: Upload Foto Kedatangan
                 </div>
 
-                <!-- Estimated Time -->
-                <div class="form-group">
-                    <label class="form-label">⏱️ Estimasi Lama Pengerjaan</label>
-                    <select name="estimated_time" required class="form-select">
-                        <option value="" disabled selected>-- Pilih Perkiraan Waktu --</option>
-                        <option value="Kurang dari 30 Menit">Kurang dari 30 Menit</option>
-                        <option value="30 Menit - 1 Jam">30 Menit - 1 Jam</option>
-                        <option value="1 - 2 Jam">1 - 2 Jam</option>
-                        <option value="2 - 3 Jam">2 - 3 Jam</option>
-                        <option value="> 3 Jam">> 3 Jam</option>
-                    </select>
+                <form action="{{ request()->fullUrl() }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+                    @csrf
+                    <input type="hidden" name="latitude" id="latitude">
+                    <input type="hidden" name="longitude" id="longitude">
+
+                    <div class="upload-area" id="beforeBox">
+                        <input type="file" name="photo_before" accept="image/*" capture="camera" required onchange="previewUpload(this, 'beforePreview', 'beforeBox')">
+                        <i class="ph-duotone ph-camera"></i>
+                        <div class="label">📷 Foto SEBELUM Perbaikan</div>
+                        <div class="hint">Wajib diunggah di lokasi</div>
+                        <img id="beforePreview" style="display:none">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">⏱️ Estimasi Lama Pengerjaan</label>
+                        <select name="estimated_time" required class="form-select">
+                            <option value="" disabled selected>-- Pilih Perkiraan Waktu --</option>
+                            <option value="Kurang dari 30 Menit">Kurang dari 30 Menit</option>
+                            <option value="30 Menit - 1 Jam">30 Menit - 1 Jam</option>
+                            <option value="1 - 2 Jam">1 - 2 Jam</option>
+                            <option value="2 - 3 Jam">2 - 3 Jam</option>
+                            <option value="> 3 Jam">> 3 Jam</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="btnSubmit">
+                        <i class="ph-bold ph-play-circle"></i> Mulai Pengerjaan (Step 1)
+                    </button>
+                </form>
+            @else
+                <div class="divider"></div>
+                <div class="info-item" style="margin-bottom:16px; border-style:dashed;">
+                    <div class="info-label">✅ Foto Kedatangan Terverifikasi</div>
+                    <div style="display:flex; align-items:center; gap:10px; margin-top:8px;">
+                        <img src="{{ asset($job->photo_before) }}" style="width:60px; height:60px; border-radius:8px; object-fit:cover;">
+                        <div>
+                            <div style="font-size:11px; font-weight:800; color:#1e293b;">Estimasi: {{ $job->estimated_time }}</div>
+                            <div style="font-size:10px; color:#64748b;">Mulai: {{ $job->started_at->format('H:i') }} WITA</div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Photo After -->
-                <div class="upload-area" id="afterBox">
-                    <input type="file" name="photo_after" accept="image/*" capture="camera" required onchange="previewUpload(this, 'afterPreview', 'afterBox')">
-                    <i class="ph-duotone ph-camera-rotate"></i>
-                    <div class="label">📷 Foto SESUDAH Perbaikan</div>
-                    <div class="hint">Tap untuk buka kamera</div>
-                    <img id="afterPreview" style="display:none">
+                <div class="alert alert-success">
+                    <i class="ph-bold ph-wrench"></i> Tahap 2: Upload Foto Penyelesaian
                 </div>
 
-                <button type="submit" class="btn btn-primary" id="btnSubmit">
-                    <i class="ph-bold ph-upload-simple"></i> Kirim Foto
-                </button>
-            </form>
+                <form action="{{ request()->fullUrl() }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+                    @csrf
+                    <input type="hidden" name="latitude" id="latitude">
+                    <input type="hidden" name="longitude" id="longitude">
+
+                    <div class="upload-area" id="afterBox">
+                        <input type="file" name="photo_after" accept="image/*" capture="camera" required onchange="previewUpload(this, 'afterPreview', 'afterBox')">
+                        <i class="ph-duotone ph-camera-rotate"></i>
+                        <div class="label">📷 Foto SESUDAH Perbaikan</div>
+                        <div class="hint">Wajib diunggah setelah selesai</div>
+                        <img id="afterPreview" style="display:none">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="btnSubmit" style="background:linear-gradient(135deg,#166534,#22c55e); box-shadow:0 8px 20px rgba(22,101,52,.3);">
+                        <i class="ph-bold ph-check-circle"></i> Selesaikan Tugas (Step 2)
+                    </button>
+                </form>
+            @endif
         @endif
     </div>
 

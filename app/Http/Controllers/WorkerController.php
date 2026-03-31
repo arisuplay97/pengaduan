@@ -168,11 +168,10 @@ class WorkerController extends Controller
                     return ['success' => false, 'message' => 'Maaf, tugas ini sudah selesai atau telah diambil oleh teknisi lain.'];
                 }
 
-                // Claim the job
+                // Claim the job (Stage 0: Assigned to technician)
                 $job->update([
                     'user_id'    => $worker->id,
-                    'status'     => 'on_progress',
-                    'started_at' => now(),
+                    'status'     => 'assigned',
                 ]);
 
                 return ['success' => true, 'message' => 'Tugas berhasil Anda ambil!', 'job' => $job];

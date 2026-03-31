@@ -18,9 +18,9 @@ class UploadController extends Controller
             ->with(['user', 'kecamatan'])
             ->firstOrFail();
 
-        // Enforce state transition: must be 'on_progress' (already claimed/assigned)
-        if (in_array($job->status, ['pending', 'assigned'])) {
-            return response("Tugas ini belum diambil. Silakan klik tombol 'Ambil Tugas' di Telegram terlebih dahulu untuk mulai mengerjakan.", 403);
+        // Enforce state transition: must be claimed first
+        if ($job->status === 'pending') {
+            return response("Tugas ini belum diambil. Silakan klik tombol 'Ambil Tugas' di Telegram/WhatsApp terlebih dahulu untuk mulai mengerjakan.", 403);
         }
 
         return view('pages.public.upload', compact('job', 'ticketCode'));
@@ -32,117 +32,101 @@ class UploadController extends Controller
     public function store(Request $request, string $ticketCode)
     {
         $job = FieldJob::where('ticket_code', $ticketCode)
-            ->with('user')
+            ->with(['user', 'kecamatan'])
             ->firstOrFail();
             
-        // Enforce state transition on POST as well
-        if (in_array($job->status, ['pending', 'assigned'])) {
-            return back()->with('error', 'Silakan klik tombol "Ambil Tugas" di Telegram terlebih dahulu sebelum mengupload foto perbaikan.');
+        if ($job->status === 'pending') {
+            return back()->with('error', 'Silakan klik tombol "Ambil Tugas" di Telegram/WhatsApp terlebih dahulu.');
         }
 
-        $request->validate([
-            'photo_before'   => 'required|image|max:10240',
-            'photo_after'    => 'required|image|max:10240',
-            'estimated_time' => 'required|string|in:Kurang dari 30 Menit,30 Menit - 1 Jam,1 - 2 Jam,2 - 3 Jam,> 3 Jam',
-            'latitude'       => 'nullable|numeric',
-            'longitude'      => 'nullable|numeric',
-        ], [
-            'photo_before.required'   => 'Foto SEBELUM wajib diisi.',
-            'photo_after.required'    => 'Foto SESUDAH wajib diisi.',
-            'photo_before.image'      => 'Foto SEBELUM harus berupa gambar.',
-            'photo_after.image'       => 'Foto SESUDAH harus berupa gambar.',
-            'estimated_time.required' => 'Estimasi waktu pengerjaan wajib dipilih.',
-            'estimated_time.in'       => 'Pilihan estimasi waktu tidak valid.',
-        ]);
+        if ($job->status === 'selesai' || $job->status === 'ditutup') {
+            return back()->with('error', 'Tugas ini sudah selesai.');
+        }
 
         $teknisiName = $job->user ? $job->user->name : 'Petugas';
         $lat = $request->latitude;
         $lng = $request->longitude;
-        $estimatedTime = $request->estimated_time;
-
-        // ── Step 1: Save ORIGINAL photos ───────────────
         $dir = public_path('uploads/jobs');
         if (!file_exists($dir)) {
             mkdir($dir, 0755, true);
         }
 
-        $beforeOrigFile = 'original_before_' . $job->id . '_' . time() . '.' . $request->file('photo_before')->getClientOriginalExtension();
-        $afterOrigFile  = 'original_after_' . $job->id . '_' . time() . '.' . $request->file('photo_after')->getClientOriginalExtension();
+        // ── CASE A: STEP 1 (Mulai Pengerjaan: Foto Sebelum + Estimasi) ──────────
+        if (!$job->photo_before) {
+            $request->validate([
+                'photo_before'   => 'required|image|max:10240',
+                'estimated_time' => 'required|string|in:Kurang dari 30 Menit,30 Menit - 1 Jam,1 - 2 Jam,2 - 3 Jam,> 3 Jam',
+                'latitude'       => 'nullable|numeric',
+                'longitude'      => 'nullable|numeric',
+            ], [
+                'photo_before.required'   => 'Foto SEBELUM wajib diunggah saat mulai pengerjaan.',
+                'estimated_time.required' => 'Estimasi waktu wajib dipilih.',
+            ]);
 
-        $request->file('photo_before')->move($dir, $beforeOrigFile);
-        $request->file('photo_after')->move($dir, $afterOrigFile);
+            $beforeFileName = 'original_before_' . $job->id . '_' . time() . '.' . $request->file('photo_before')->getClientOriginalExtension();
+            $request->file('photo_before')->move($dir, $beforeFileName);
 
-        // ── Step 2: Create WATERMARKED copies (Fail-safe) ──────────
-        $beforeWmFile = $beforeOrigFile; // Fallback to original
-        $afterWmFile = $afterOrigFile;
+            // Watermark (Fail-safe)
+            $wmFile = $beforeFileName;
+            try {
+                $wmFile = $this->addWatermark($dir . '/' . $beforeFileName, $job, $teknisiName, 'BEFORE', $lat, $lng);
+            } catch (\Exception $e) { \Illuminate\Support\Facades\Log::error('Watermark B-Failed: ' . $e->getMessage()); }
 
+            $job->update([
+                'photo_before'   => 'uploads/jobs/' . $wmFile,
+                'status'         => 'on_progress',
+                'started_at'     => now(),
+                'estimated_time' => $request->estimated_time,
+                'latitude'       => $lat ?? $job->latitude,
+                'longitude'      => $lng ?? $job->longitude,
+            ]);
+
+            return back()->with('success', 'Foto kedatangan berhasil diunggah! Status sekarang: SEDANG DIKERJAKAN. Silakan lanjutkan pengerjaan.');
+        }
+
+        // ── CASE B: STEP 2 (Selesaikan Pekerjaan: Foto Sesudah) ──────────
+        $request->validate([
+            'photo_after' => 'required|image|max:10240',
+            'latitude'    => 'nullable|numeric',
+            'longitude'   => 'nullable|numeric',
+        ], [
+            'photo_after.required' => 'Foto SESUDAH wajib diunggah untuk menyelesaikan tugas.',
+        ]);
+
+        $afterFileName = 'original_after_' . $job->id . '_' . time() . '.' . $request->file('photo_after')->getClientOriginalExtension();
+        $request->file('photo_after')->move($dir, $afterFileName);
+
+        // Watermark (Fail-safe)
+        $wmFile = $afterFileName;
         try {
-            $beforeWmFile = $this->addWatermark(
-                $dir . '/' . $beforeOrigFile,
-                $job, $teknisiName, 'BEFORE', $lat, $lng
-            );
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Watermark BEFORE failed: ' . $e->getMessage());
-        }
+            $wmFile = $this->addWatermark($dir . '/' . $afterFileName, $job, $teknisiName, 'AFTER', $lat, $lng);
+        } catch (\Exception $e) { \Illuminate\Support\Facades\Log::error('Watermark A-Failed: ' . $e->getMessage()); }
 
-        try {
-            $afterWmFile = $this->addWatermark(
-                $dir . '/' . $afterOrigFile,
-                $job, $teknisiName, 'AFTER', $lat, $lng
-            );
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Watermark AFTER failed: ' . $e->getMessage());
-        }
+        $job->update([
+            'photo_after' => 'uploads/jobs/' . $wmFile,
+            'status'      => 'selesai',
+            'finished_at' => now(),
+        ]);
 
-        // ── Step 3: Update DB ──────────────────────────
-        $updateData = [
-            'photo_before'   => 'uploads/jobs/' . $beforeWmFile,
-            'photo_after'    => 'uploads/jobs/' . $afterWmFile,
-            'status'         => 'selesai',
-            'finished_at'    => now(),
-            'estimated_time' => $estimatedTime,
-        ];
-
-        if ($lat && $lng && !$job->latitude) {
-            $updateData['latitude']  = $lat;
-            $updateData['longitude'] = $lng;
-        }
-
-        $job->update($updateData);
-        $job->refresh();
-
-        // â”€â”€ Step 4: Notify admins via Telegram â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // Notify admins via Telegram
         try {
             $telegram = new TelegramService();
             $telegram->notifyJobCompleted($job);
-
-            // Notify the technician that their upload was successful
             if ($job->user && $job->user->telegram_chat_id) {
-                $telegram->sendMessage(
-                    $job->user->telegram_chat_id,
-                    "🔔 <b>Laporan berhasil terkirim, Terimakasih!</b>\n\nNomor Tiket: <code>{$job->ticket_code}</code>"
-                );
+                $telegram->sendMessage($job->user->telegram_chat_id, "🔔 <b>Laporan perbaikan selesai, Terimakasih!</b>\n\nTiket: <code>{$job->ticket_code}</code>");
             }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Telegram notification error: ' . $e->getMessage());
-        }
+        } catch (\Exception $e) { \Illuminate\Support\Facades\Log::error('Telegram notification error: ' . $e->getMessage()); }
 
-        // ── Step 5: Notify technician via WhatsApp ──────────
+        // Notify technician via WhatsApp
         try {
             if ($job->user && $job->user->phone) {
                 $fonnte = new \App\Services\FonnteService();
-                $waMsg = "✅ *LAPORAN BERHASIL DITERIMA*\n\n"
-                       . "Terima kasih, {$teknisiName}! Laporan perbaikan tiket *{$job->ticket_code}* beserta bukti foto telah berhasil tersimpan di sistem.\n"
-                       . "Pekerjaan Anda ini telah dicatat dan akan dievaluasi oleh Direksi.\n\n"
-                       . "_Tetap utamakan keselamatan kerja_ ⚒️";
-
+                $waMsg = "✅ *LAPORAN SELESAI DITERIMA*\n\nTerima kasih, {$teknisiName}! Laporan perbaikan tiket *{$job->ticket_code}* telah tersimpan.\nPekerjaan Anda telah dicatat oleh sistem. ⚒️";
                 $fonnte->sendMessage($job->user->phone, $waMsg);
             }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Fonnte completion notification error: ' . $e->getMessage());
-        }
+        } catch (\Exception $e) { \Illuminate\Support\Facades\Log::error('Fonnte completion notification error: ' . $e->getMessage()); }
 
-        return back()->with('success', 'Foto berhasil diupload! Tiket telah ditandai selesai. ✅');
+        return back()->with('success', 'Tiket telah berhasil diselesaikan! Terima kasih atas kerjasamanya. ✅');
     }
 
     /**
