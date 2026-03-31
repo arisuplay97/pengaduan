@@ -68,15 +68,27 @@ class UploadController extends Controller
         $request->file('photo_before')->move($dir, $beforeOrigFile);
         $request->file('photo_after')->move($dir, $afterOrigFile);
 
-        // ── Step 2: Create WATERMARKED copies ──────────
-        $beforeWmFile = $this->addWatermark(
-            $dir . '/' . $beforeOrigFile,
-            $job, $teknisiName, 'BEFORE', $lat, $lng
-        );
-        $afterWmFile = $this->addWatermark(
-            $dir . '/' . $afterOrigFile,
-            $job, $teknisiName, 'AFTER', $lat, $lng
-        );
+        // ── Step 2: Create WATERMARKED copies (Fail-safe) ──────────
+        $beforeWmFile = $beforeOrigFile; // Fallback to original
+        $afterWmFile = $afterOrigFile;
+
+        try {
+            $beforeWmFile = $this->addWatermark(
+                $dir . '/' . $beforeOrigFile,
+                $job, $teknisiName, 'BEFORE', $lat, $lng
+            );
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Watermark BEFORE failed: ' . $e->getMessage());
+        }
+
+        try {
+            $afterWmFile = $this->addWatermark(
+                $dir . '/' . $afterOrigFile,
+                $job, $teknisiName, 'AFTER', $lat, $lng
+            );
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Watermark AFTER failed: ' . $e->getMessage());
+        }
 
         // ── Step 3: Update DB ──────────────────────────
         $updateData = [
@@ -136,6 +148,12 @@ class UploadController extends Controller
     protected function addWatermark(string $filePath, FieldJob $job, string $teknisiName, string $type, ?string $lat, ?string $lng): string
     {
         $image = Image::read($filePath);
+        
+        // Prevent OutOfMemory by scaling down huge photos before processing
+        if ($image->width() > 1400) {
+            $image->scaleDown(width: 1400);
+        }
+
         $width  = $image->width();
         $height = $image->height();
 
@@ -163,7 +181,7 @@ class UploadController extends Controller
         $image->drawRectangle(
             0,
             $height - $boxHeight,
-            function ($rectangle) use ($width, $height) {
+            function ($rectangle) use ($width, $height, $boxHeight) {
                 $rectangle->size($width, $boxHeight); // Width, Height in v3
                 $rectangle->background('rgba(0, 0, 0, 0.6)');
             }
