@@ -182,18 +182,12 @@ class WorkerController extends Controller
             return redirect()->route('public.landing')->with('error', 'Terjadi kesalahan sistem saat mengambil tugas.');
         }
 
-        // Login the worker
-        Auth::login($worker, true);
-        
-        // Rotate magic token for security
-        $worker->forceFill([
-            'magic_token' => \Illuminate\Support\Str::random(60)
-        ])->save();
-
         if ($result['success']) {
-            return redirect()->route('worker.dashboard')->with('success', $result['message']);
+            $job = $result['job'];
+            $uploadUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute('upload.form', now()->addHours(12), ['ticketCode' => $job->ticket_code]);
+            return redirect($uploadUrl)->with('success', $result['message']);
         } else {
-            return redirect()->route('worker.dashboard')->with('error', $result['message']);
+            return redirect()->route('public.landing')->with('error', $result['message']);
         }
     }
 }
