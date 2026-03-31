@@ -119,8 +119,14 @@ class FonnteService
 
             $message .= "🏘️ Kecamatan: Kec. {$kecName}\n"
                 . "🔧 Jenis: {$job->title}\n"
-                . "────────────────\n"
-                . "Tekan link di bawah ini untuk mengambil tugas ini:\n👉 {$claimUrl}\n\n"
+                . "────────────────\n";
+
+            if ($job->latitude && $job->longitude) {
+                $message .= "📍 Lokasi Maps:\nhttps://www.google.com/maps?q={$job->latitude},{$job->longitude}\n"
+                    . "────────────────\n";
+            }
+
+            $message .= "Tekan link di bawah ini untuk mengambil tugas ini:\n👉 {$claimUrl}\n\n"
                 . "_Link keamanan ini hanya berlaku selama 2 jam._";
 
             // Send WA message independently per technician
