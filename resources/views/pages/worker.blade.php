@@ -965,6 +965,36 @@
             }
         }
 
+        function compressImage(file, maxSize, callback) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > maxSize || height > maxSize) {
+                        if (width > height) {
+                            height = Math.round((height *= maxSize / width));
+                            width = maxSize;
+                        } else {
+                            width = Math.round((width *= maxSize / height));
+                            height = maxSize;
+                        }
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    canvas.toBlob(function(blob) {
+                        callback(new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() }));
+                    }, 'image/jpeg', 0.8);
+                };
+            };
+        }
+
         // === Logic (Preserved) ===
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -972,6 +1002,7 @@
             e.preventDefault();
             const btn = document.getElementById('rBtn');
             const originalText = btn.innerText;
+            const form = this;
             
             btn.disabled = true;
             btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> GPS...';
@@ -987,8 +1018,20 @@
                     document.getElementById('rLat').value = position.coords.latitude;
                     document.getElementById('rLng').value = position.coords.longitude;
                     
-                    btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Mengirim...';
-                    e.target.submit();
+                    btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Memproses foto...';
+                    const fileInput = form.querySelector('input[type="file"]');
+                    if (fileInput && fileInput.files.length > 0) {
+                        compressImage(fileInput.files[0], 1200, function(compressedFile) {
+                            const dt = new DataTransfer();
+                            dt.items.add(compressedFile);
+                            fileInput.files = dt.files;
+                            btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Mengirim...';
+                            form.submit();
+                        });
+                    } else {
+                        btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Mengirim...';
+                        form.submit();
+                    }
                 },
                 function(error) {
                     alert("Gagal mengambil lokasi: " + error.message);
@@ -996,6 +1039,29 @@
                 }, 
                 { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
             );
+        });
+
+        document.getElementById('editJobForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Memproses...';
+            
+            const fileInput = form.querySelector('input[type="file"]');
+            if (fileInput && fileInput.files.length > 0) {
+                compressImage(fileInput.files[0], 1200, function(compressedFile) {
+                    const dt = new DataTransfer();
+                    dt.items.add(compressedFile);
+                    fileInput.files = dt.files;
+                    btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Mengirim...';
+                    form.submit();
+                });
+            } else {
+                form.submit();
+            }
         });
 
         function submitFinish() {
@@ -1011,28 +1077,30 @@
             btn.disabled = true;
             btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Uploading...';
 
-            const formData = new FormData();
-            formData.append('_token', csrfToken);
-            formData.append('photo_after', fileInput.files[0]);
+            compressImage(fileInput.files[0], 1200, function(compressedFile) {
+                const formData = new FormData();
+                formData.append('_token', csrfToken);
+                formData.append('photo_after', compressedFile);
 
-            fetch(`/worker/jobs/${jobId}/finish`, {
-                method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                } else {
-                    alert('Gagal menyimpan data.');
+                fetch(`/worker/jobs/${jobId}/finish`, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Gagal menyimpan data.');
+                        btn.disabled = false; btn.innerText = 'Selesai & Kirim';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan jaringan.');
                     btn.disabled = false; btn.innerText = 'Selesai & Kirim';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan jaringan.');
-                btn.disabled = false; btn.innerText = 'Selesai & Kirim';
+                });
             });
         }
 
@@ -1049,28 +1117,30 @@
             btn.disabled = true;
             btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Uploading...';
 
-            const formData = new FormData();
-            formData.append('_token', csrfToken);
-            formData.append('photo_before', fileInput.files[0]);
+            compressImage(fileInput.files[0], 1200, function(compressedFile) {
+                const formData = new FormData();
+                formData.append('_token', csrfToken);
+                formData.append('photo_before', compressedFile);
 
-            fetch(`/worker/jobs/${jobId}/start`, {
-                method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                } else {
-                    alert('Gagal memulai pekerjaan.');
+                fetch(`/worker/jobs/${jobId}/start`, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Gagal memulai pekerjaan.');
+                        btn.disabled = false; btn.innerText = 'Mulai Kerjakan';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan jaringan.');
                     btn.disabled = false; btn.innerText = 'Mulai Kerjakan';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan jaringan.');
-                btn.disabled = false; btn.innerText = 'Mulai Kerjakan';
+                });
             });
         }
 

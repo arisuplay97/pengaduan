@@ -215,12 +215,80 @@
             }
         }
 
-        document.getElementById('uploadForm')?.addEventListener('submit', function() {
+        function compressImage(file, maxSize, callback) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxSize || height > maxSize) {
+                        if (width > height) {
+                            height = Math.round((height *= maxSize / width));
+                            width = maxSize;
+                        } else {
+                            width = Math.round((width *= maxSize / height));
+                            height = maxSize;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob(function(blob) {
+                        const newFile = new File([blob], file.name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+                        callback(newFile);
+                    }, 'image/jpeg', 0.8);
+                };
+            };
+        }
+
+        document.getElementById('uploadForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
             const btn = document.getElementById('btnSubmit');
             if (btn) {
                 btn.disabled = true;
-                btn.innerHTML = '<i class="ph-bold ph-spinner" style="animation:spin 1s linear infinite"></i> Mengupload & memproses...';
+                btn.innerHTML = '<i class="ph-bold ph-spinner" style="animation:spin 1s linear infinite"></i> Memproses foto...';
             }
+
+            const fileInputs = form.querySelectorAll('input[type="file"]');
+            let filesToProcess = 0;
+            let filesProcessed = 0;
+
+            fileInputs.forEach(input => {
+                if (input.files && input.files.length > 0) filesToProcess++;
+            });
+
+            if (filesToProcess === 0) {
+                form.submit();
+                return;
+            }
+
+            fileInputs.forEach(input => {
+                if (input.files && input.files.length > 0) {
+                    compressImage(input.files[0], 1200, function(compressedFile) {
+                        const dt = new DataTransfer();
+                        dt.items.add(compressedFile);
+                        input.files = dt.files;
+                        
+                        filesProcessed++;
+                        if (filesProcessed === filesToProcess) {
+                            if (btn) btn.innerHTML = '<i class="ph-bold ph-spinner" style="animation:spin 1s linear infinite"></i> Mengupload...';
+                            form.submit();
+                        }
+                    });
+                }
+            });
         });
     </script>
 </body>
