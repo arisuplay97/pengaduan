@@ -141,13 +141,13 @@ const Track = ({ initialTicket, initialCode }) => {
                                     </div>
                                 </div>
 
-                                {/* Step 2: Mencari Petugas */}
+                                {/* Step 2: Petugas Sedang Mempersiapkan */}
                                 <div className="relative flex items-start gap-5">
                                     <div className={`w-8 h-8 rounded-full border-4 border-white shadow-sm flex items-center justify-center shrink-0 relative z-10 ${ticket.status !== 'pending' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-500'}`}>
                                         {ticket.status !== 'pending' ? <i className="ph-bold ph-check text-sm"></i> : <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>}
                                     </div>
                                     <div className="pt-1">
-                                        <h4 className="text-sm font-bold text-slate-800">Mencari Petugas</h4>
+                                        <h4 className="text-sm font-bold text-slate-800">Petugas Sedang Mempersiapkan</h4>
                                         <p className="text-xs text-slate-400 mt-1 font-medium">
                                             {ticket.status === 'pending' ? 'Sistem sedang memanggil teknisi terdekat di wilayah pendaftaran.' : 'Teknisi lapangan telah dikonfirmasi.'}
                                         </p>
