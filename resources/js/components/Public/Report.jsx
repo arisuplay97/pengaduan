@@ -167,12 +167,7 @@ const Report = ({ kecamatans }) => {
                     <a href="/" className="flex items-center gap-2 text-slate-500 hover:text-sky-600 font-bold transition">
                         <i className="ph-bold ph-arrow-left text-lg"></i> Kembali
                     </a>
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center">
-                            <i className="ph-fill ph-drop text-sky-600"></i>
-                        </div>
-                        <span className="font-extrabold tracking-tight">Lapor Gangguan</span>
-                    </div>
+
                 </div>
             </nav>
 
