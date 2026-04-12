@@ -87,8 +87,8 @@ const Landing = () => {
                         <a href="/lacak" className="text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors duration-200">
                             Lacak Tiket
                         </a>
-                        <a href="/lapor" className="bg-[#0095FF] hover:bg-[#0080FF] text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-[0_4px_14px_0_rgba(0,149,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,149,255,0.23)] hover:-translate-y-0.5 flex items-center gap-2">
-                            Lapor Sekarang <i className="ph-bold ph-arrow-right"></i>
+                        <a href="/lapor" className="group relative overflow-hidden bg-gradient-to-r from-[#0095FF] to-[#0070FF] text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all hover:shadow-lg hover:shadow-blue-500/30 hover:ring-4 hover:ring-blue-500/20 hover:-translate-y-0.5 flex items-center gap-2">
+                            Lapor Sekarang <i className="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
                         </a>
                     </div>
                 </div>
@@ -100,10 +100,7 @@ const Landing = () => {
 
                     {/* Left Copy */}
                     <div className="text-center lg:text-left space-y-7 animate-fade-in-up">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-[#0095FF] text-[10px] sm:text-xs font-bold tracking-wide">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#0095FF] shadow-[0_0_8px_rgba(0,149,255,0.8)]"></span>
-                            Layanan Pengaduan 24/7
-                        </div>
+
 
                         <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[1.1] text-slate-900">
                             Respons Cepat,<br />
@@ -115,10 +112,10 @@ const Landing = () => {
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start pt-4">
-                            <a href="/lapor" className="w-full sm:w-auto bg-[#0095FF] text-white px-8 py-4 rounded-full text-base font-bold hover:bg-[#0080FF] transition-all shadow-[0_4px_14px_0_rgba(0,149,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,149,255,0.23)] hover:-translate-y-0.5 flex items-center justify-center gap-3">
-                                <i className="ph-bold ph-pencil-simple text-xl"></i> Buat Laporan
+                            <a href="/lapor" className="w-full sm:w-auto bg-gradient-to-r from-[#0095FF] to-[#0070FF] text-white px-8 py-4 rounded-2xl text-base font-bold hover:shadow-xl hover:shadow-blue-500/30 hover:ring-4 hover:ring-blue-500/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-3 group">
+                                <i className="ph-bold ph-pencil-simple text-xl group-hover:rotate-12 transition-transform"></i> Buat Laporan
                             </a>
-                            <a href="/lacak" className="w-full sm:w-auto bg-white text-slate-700 hover:text-slate-900 border border-slate-200 hover:border-slate-300 px-8 py-4 rounded-full text-base font-bold transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-3">
+                            <a href="/lacak" className="w-full sm:w-auto bg-white text-slate-700 hover:text-slate-900 border border-slate-200 hover:border-slate-300 px-8 py-4 rounded-2xl text-base font-bold transition-all hover:bg-slate-50 hover:shadow-md flex items-center justify-center gap-3">
                                 <i className="ph-bold ph-magnifying-glass text-xl"></i> Lacak Tiket
                             </a>
                         </div>
@@ -201,8 +198,8 @@ const Landing = () => {
                     <p className="text-slate-500 text-[16px] md:text-[18px] mb-12 max-w-[600px] mx-auto font-medium leading-relaxed">
                         Jangan biarkan air mampet atau keruh mengganggu aktivitas Anda. Tim kami siap meluncur ke lokasi segera setelah laporan Anda masuk.
                     </p>
-                    <a href="/lapor" className="inline-flex items-center gap-3 bg-[#0095FF] hover:bg-[#0080FF] text-white px-10 py-4 rounded-full text-[16px] font-bold transition-all shadow-[0_4px_14px_0_rgba(0,149,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,149,255,0.23)] hover:-translate-y-1">
-                        Buat Laporan Sekarang <i className="ph-bold ph-arrow-right text-xl"></i>
+                    <a href="/lapor" className="group inline-flex items-center gap-3 bg-gradient-to-r from-[#0095FF] to-[#0070FF] text-white px-10 py-4 rounded-2xl text-[16px] font-bold transition-all hover:shadow-xl hover:shadow-blue-500/30 hover:ring-4 hover:ring-blue-500/20 hover:-translate-y-1">
+                        Buat Laporan Sekarang <i className="ph-bold ph-arrow-right text-xl group-hover:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
             </div>
