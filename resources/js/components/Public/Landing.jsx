@@ -76,7 +76,7 @@ const Landing = () => {
                 <div className="max-w-7xl mx-auto px-6 sm:px-12 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         {/* Logo */}
-                        <img src="/pdam-logo.png" alt="Logo Tirta Ardhia Rinjani" className="h-12 sm:h-16 object-contain drop-shadow-sm" />
+                        <img src="/pdam-logo.png" alt="Logo Tirta Ardhia Rinjani" className="h-20 sm:h-24 object-contain drop-shadow-sm" />
                         <div className="hidden sm:block">
                             <h2 className="text-sm font-extrabold leading-tight text-slate-900 font-jakarta tracking-wide">Perumdam Tirta Ardhia Rinjani</h2>
                             <p className="text-[9px] text-[#0095FF] font-bold tracking-[0.2em] uppercase mt-0.5">Kabupaten Lombok Tengah</p>
