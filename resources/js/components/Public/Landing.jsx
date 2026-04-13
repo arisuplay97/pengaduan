@@ -59,7 +59,7 @@ const Landing = () => {
                     setIsAlurVisible(true);
                 }
             },
-            { threshold: 0.05 }
+            { threshold: 0.01 }
         );
 
         if (alurRef.current) {
@@ -109,7 +109,7 @@ const Landing = () => {
             </nav>
 
             {/* Hero Section */}
-            <div className="relative min-h-[100dvh] flex items-center justify-center pt-24 pb-20 z-10">
+            <div className="relative min-h-[100dvh] flex items-center justify-center pt-40 md:pt-32 pb-20 z-10">
                 <div className="max-w-[1440px] mx-auto px-6 sm:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-12 items-center">
 
                     {/* Left Copy */}
