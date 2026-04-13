@@ -77,19 +77,13 @@ const Landing = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] font-jakarta text-slate-800 selection:bg-[#0095FF]/30 selection:text-[#0095FF]">
+        <div className="min-h-screen bg-gradient-to-br from-[#F4F7FA] via-[#E8F0F8] to-[#F4F7FA] font-jakarta text-slate-800 selection:bg-[#0095FF]/30 selection:text-[#0095FF]">
 
             {/* Premium Light Background with Subtle Glowing Orbs */}
             <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
                 {/* Clean, high-end mesh gradient look */}
                 <div className="absolute -top-40 -right-40 w-[800px] h-[800px] bg-sky-200/40 rounded-full blur-[120px]"></div>
                 <div className="absolute top-60 -left-20 w-[600px] h-[600px] bg-blue-100/50 rounded-full blur-[100px]"></div>
-
-                {/* Ultra-subtle grid for texture */}
-                <div className="absolute inset-0 opacity-[0.03]" style={{
-                    backgroundImage: 'linear-gradient(#0f172a 1px, transparent 1px), linear-gradient(90deg, #0f172a 1px, transparent 1px)',
-                    backgroundSize: '64px 64px'
-                }}></div>
             </div>
 
             {/* Navigation */}
@@ -192,8 +186,8 @@ const Landing = () => {
                 <div className="flex flex-col gap-12 md:gap-20">
                     {steps.map((step, idx) => (
                         <div key={idx} className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-16 group cursor-default">
-                            {/* Giant Architectural Number */}
-                            <div className="text-7xl md:text-[120px] font-black leading-none tracking-tighter text-slate-200 group-hover:text-[#0095FF]/20 transition-colors duration-500 w-32 md:w-48">
+                            {/* Giant Architectural Number - Now Bold and Vibrant */}
+                            <div className="text-7xl md:text-[120px] font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-[#0095FF] to-blue-800 opacity-20 group-hover:opacity-100 transition-opacity duration-500 w-32 md:w-48 drop-shadow-md">
                                 0{idx + 1}
                             </div>
                             
