@@ -106,20 +106,153 @@ class PublicController extends Controller
     }
 
     /**
-     * Track ticket status
+     * Track ticket status (Blade page — initial load)
      */
     public function trackTicket(Request $request)
     {
         $ticket = null;
-        $ticketCode = $request->query('kode');
+        $ticketCode = $this->sanitizeTicketCode($request->query('kode'));
 
         if ($ticketCode) {
-            $ticket = FieldJob::with(['kecamatan', 'user'])
+            $ticket = FieldJob::with(['kecamatan', 'user:id,name,phone,photo'])
                 ->where('ticket_code', $ticketCode)
                 ->first();
         }
 
         return view('pages.public.track', compact('ticket', 'ticketCode'));
+    }
+
+    /**
+     * JSON API for auto-refresh polling (public, rate-limited)
+     */
+    public function getTicketJson(Request $request)
+    {
+        $ticketCode = $this->sanitizeTicketCode($request->query('kode'));
+
+        if (!$ticketCode) {
+            return response()->json(['error' => 'Kode tiket wajib diisi.'], 422);
+        }
+
+        $ticket = FieldJob::with(['kecamatan:id,nama', 'user:id,name,phone,photo'])
+            ->where('ticket_code', $ticketCode)
+            ->first();
+
+        if (!$ticket) {
+            return response()->json(['error' => 'Tiket tidak ditemukan.'], 404);
+        }
+
+        // Return only fields needed by the frontend
+        return response()->json([
+            'id'             => $ticket->id,
+            'ticket_code'    => $ticket->ticket_code,
+            'title'          => $ticket->title,
+            'address'        => $ticket->address,
+            'status'         => $ticket->status,
+            'reporter_name'  => $ticket->reporter_name,
+            'reporter_phone' => $ticket->reporter_phone,
+            'photo_before'   => $ticket->photo_before,
+            'photo_after'    => $ticket->photo_after,
+            'estimated_time' => $ticket->estimated_time,
+            'rating'         => $ticket->rating,
+            'rating_feedback'=> $ticket->rating_feedback,
+            'created_at'     => $ticket->created_at,
+            'started_at'     => $ticket->started_at,
+            'finished_at'    => $ticket->finished_at,
+            'cancelled_at'   => $ticket->cancelled_at,
+            'kecamatan'      => $ticket->kecamatan,
+            'user'           => $ticket->user ? [
+                'name'  => $ticket->user->name,
+                'phone' => $ticket->user->phone,
+                'photo' => $ticket->user->photo,
+            ] : null,
+        ]);
+    }
+
+    /**
+     * Submit CSAT rating (public, rate-limited)
+     */
+    public function submitRating(Request $request)
+    {
+        $request->validate([
+            'ticket_code'    => 'required|string|max:20',
+            'reporter_phone' => 'required|string|max:20',
+            'rating'         => 'required|integer|min:1|max:5',
+            'feedback'       => 'nullable|string|max:500',
+        ]);
+
+        $ticket = FieldJob::where('ticket_code', $this->sanitizeTicketCode($request->ticket_code))
+            ->first();
+
+        if (!$ticket) {
+            return response()->json(['success' => false, 'message' => 'Tiket tidak ditemukan.'], 404);
+        }
+
+        // Only completed tickets can be rated
+        if ($ticket->status !== 'selesai') {
+            return response()->json(['success' => false, 'message' => 'Tiket belum selesai.'], 422);
+        }
+
+        // Verify reporter ownership via phone number
+        if ($ticket->reporter_phone !== $request->reporter_phone) {
+            return response()->json(['success' => false, 'message' => 'Nomor HP tidak cocok dengan pelapor.'], 403);
+        }
+
+        // Prevent double rating
+        if ($ticket->rating !== null) {
+            return response()->json(['success' => false, 'message' => 'Anda sudah memberikan penilaian.'], 422);
+        }
+
+        $ticket->update([
+            'rating'          => $request->rating,
+            'rating_feedback' => $request->feedback,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Terima kasih atas penilaian Anda!']);
+    }
+
+    /**
+     * Cancel a ticket (public, rate-limited)
+     */
+    public function cancelTicket(Request $request)
+    {
+        $request->validate([
+            'ticket_code'    => 'required|string|max:20',
+            'reporter_phone' => 'required|string|max:20',
+        ]);
+
+        $ticket = FieldJob::where('ticket_code', $this->sanitizeTicketCode($request->ticket_code))
+            ->first();
+
+        if (!$ticket) {
+            return response()->json(['success' => false, 'message' => 'Tiket tidak ditemukan.'], 404);
+        }
+
+        // Only pending tickets can be cancelled by the reporter
+        if ($ticket->status !== 'pending') {
+            return response()->json(['success' => false, 'message' => 'Tiket sudah tidak bisa dibatalkan karena sedang/sudah diproses.'], 422);
+        }
+
+        // Verify reporter ownership via phone number
+        if ($ticket->reporter_phone !== $request->reporter_phone) {
+            return response()->json(['success' => false, 'message' => 'Nomor HP tidak cocok dengan pelapor.'], 403);
+        }
+
+        $ticket->update([
+            'status'       => 'dibatalkan',
+            'cancelled_at' => now(),
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Laporan berhasil dibatalkan.']);
+    }
+
+    /**
+     * Sanitize ticket code input to prevent injection
+     */
+    private function sanitizeTicketCode(?string $code): ?string
+    {
+        if (!$code) return null;
+        // Ticket codes follow format: TSA-MMYY-XXXX — only allow alphanumeric + dash
+        return preg_replace('/[^A-Za-z0-9\-]/', '', $code);
     }
 
     /**

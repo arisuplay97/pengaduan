@@ -31,13 +31,17 @@ class FieldJob extends Model
         'latitude',
         'longitude',
         'estimated_time',
+        'rating',
+        'rating_feedback',
         'started_at',
         'finished_at',
+        'cancelled_at',
     ];
 
     protected $casts = [
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
+        'cancelled_at' => 'datetime',
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
     ];
@@ -47,7 +51,7 @@ class FieldJob extends Model
      */
     const STATUSES = [
         'pending', 'assigned', 'on_progress',
-        'selesai', 'ditutup', 'ditolak', 'eskalasi',
+        'selesai', 'ditutup', 'ditolak', 'eskalasi', 'dibatalkan',
     ];
 
     /**

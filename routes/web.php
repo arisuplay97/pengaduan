@@ -22,36 +22,13 @@ Route::get('/lapor', [PublicController::class, 'reportForm'])->name('public.repo
 Route::post('/lapor', [PublicController::class, 'storeReport'])->name('public.report.store')->middleware('throttle:5,1');
 Route::get('/lacak', [PublicController::class, 'trackTicket'])->name('public.track');
 
+// ===== PUBLIC API (Tracking, Rating, Cancel — No Auth, Rate Limited) =====
+Route::get('/api/lacak', [PublicController::class, 'getTicketJson'])->name('api.track')->middleware('throttle:60,1');
+Route::post('/api/lacak/rate', [PublicController::class, 'submitRating'])->name('api.track.rate')->middleware('throttle:10,1');
+Route::post('/api/lacak/cancel', [PublicController::class, 'cancelTicket'])->name('api.track.cancel')->middleware('throttle:5,1');
+
 // ===== TELEGRAM WEBHOOK (No CSRF, No Auth) =====
 Route::post('/api/telegram/webhook', [TelegramWebhookController::class, 'handle'])->name('telegram.webhook');
-
-// Setup Webhook URL (Run this once from browser)
-Route::get('/set-telegram-webhook', function () {
-    $botToken = config('services.telegram.bot_token');
-    $webhookSecret = config('services.telegram.webhook_secret');
-    
-    // Check database if not in config
-    if (!$botToken) {
-        $settings = \Illuminate\Support\Facades\DB::table('settings')->pluck('value', 'key');
-        $botToken = $settings['telegram_bot_token'] ?? null;
-    }
-
-    if (!$botToken) {
-        return "❌ Error: Bot Token belum diisi di database atau .env.";
-    }
-
-    $url = url('/api/telegram/webhook');
-    $response = \Illuminate\Support\Facades\Http::post("https://api.telegram.org/bot{$botToken}/setWebhook", [
-        'url' => $url,
-        'secret_token' => $webhookSecret,
-    ]);
-
-    $result = $response->json();
-    if (isset($result['ok']) && $result['ok']) {
-        return "✅ Sukses memasang Webhook ke: {$url}";
-    }
-    return "❌ Gagal: " . json_encode($result);
-});
 
 // ===== SIGNED URL UPLOAD (Require Valid Signature) =====
 Route::get('/upload/{ticketCode}', [UploadController::class, 'showForm'])->name('upload.form')->middleware('signed');
@@ -80,6 +57,29 @@ Route::middleware('auth')->group(function () {
     // Settings & Profile
     Route::get('/settings', [\App\Http\Controllers\SettingController::class, 'index'])->name('settings');
     Route::post('/settings', [\App\Http\Controllers\SettingController::class, 'update'])->name('settings.update');
+
+    // Setup Telegram Webhook (Admin only, run once)
+    Route::get('/set-telegram-webhook', function () {
+        $botToken = config('services.telegram.bot_token');
+        $webhookSecret = config('services.telegram.webhook_secret');
+        if (!$botToken) {
+            $settings = \Illuminate\Support\Facades\DB::table('settings')->pluck('value', 'key');
+            $botToken = $settings['telegram_bot_token'] ?? null;
+        }
+        if (!$botToken) {
+            return "❌ Error: Bot Token belum diisi di database atau .env.";
+        }
+        $url = url('/api/telegram/webhook');
+        $response = \Illuminate\Support\Facades\Http::post("https://api.telegram.org/bot{$botToken}/setWebhook", [
+            'url' => $url,
+            'secret_token' => $webhookSecret,
+        ]);
+        $result = $response->json();
+        if (isset($result['ok']) && $result['ok']) {
+            return "✅ Sukses memasang Webhook ke: {$url}";
+        }
+        return "❌ Gagal: " . json_encode($result);
+    });
 
     // Resource Routes for CRUD
     Route::resource('agenda', AgendaController::class);

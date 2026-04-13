@@ -10,49 +10,49 @@ class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * Only creates users if they don't exist yet.
+     * Never overwrites passwords of existing users.
      */
     public function run(): void
     {
         $users = [
             [
-                'name' => 'Superadmin',
+                'name'     => 'Superadmin',
                 'username' => 'superadmin',
-                'email' => 'superadmin@pdam.go.id',
-                'password' => Hash::make('123456'),
-                'role' => 'superadmin',
+                'email'    => 'superadmin@pdam.go.id',
+                'role'     => 'superadmin',
             ],
             [
-                'name' => 'Administrator',
+                'name'     => 'Administrator',
                 'username' => 'admin',
-                'email' => 'admin@pdam.go.id',
-                'password' => Hash::make('123456'),
-                'role' => 'admin',
+                'email'    => 'admin@pdam.go.id',
+                'role'     => 'admin',
             ],
             [
-                'name' => 'Direktur Utama',
+                'name'     => 'Direktur Utama',
                 'username' => 'dirut',
-                'email' => 'dirut@pdam.go.id',
-                'password' => Hash::make('123456'),
+                'email'    => 'dirut@pdam.go.id',
             ],
             [
-                'name' => 'Direktur Umum',
+                'name'     => 'Direktur Umum',
                 'username' => 'dirum',
-                'email' => 'dirum@pdam.go.id',
-                'password' => Hash::make('123456'),
+                'email'    => 'dirum@pdam.go.id',
             ],
             [
-                'name' => 'Direktur Operasional',
+                'name'     => 'Direktur Operasional',
                 'username' => 'dirop',
-                'email' => 'dirop@pdam.go.id',
-                'password' => Hash::make('123456'),
+                'email'    => 'dirop@pdam.go.id',
             ],
         ];
 
         foreach ($users as $userData) {
-            User::updateOrCreate(
-                ['username' => $userData['username']],
-                $userData
-            );
+            // Only create if user doesn't exist — never overwrite password
+            if (!User::where('username', $userData['username'])->exists()) {
+                $defaultPassword = env('DEFAULT_SEED_PASSWORD', 'ChangeMeImmediately!2026');
+                User::create(array_merge($userData, [
+                    'password' => Hash::make($defaultPassword),
+                ]));
+            }
         }
     }
 }
