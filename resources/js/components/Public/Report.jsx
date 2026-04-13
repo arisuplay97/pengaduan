@@ -35,7 +35,8 @@ const Report = ({ kecamatans }) => {
                 const map = window.L.map('map', {
                     maxBounds: lombokBounds,
                     maxBoundsViscosity: 1.0,
-                    minZoom: 10
+                    minZoom: 10,
+                    attributionControl: false
                 }).setView([formData.latitude, formData.longitude], 16);
 
                 window.L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
