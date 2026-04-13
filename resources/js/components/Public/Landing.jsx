@@ -177,7 +177,7 @@ const Landing = () => {
 
             {/* How it Works Section - Ultra Premium Typographic List */}
             <div ref={alurRef} className={`pt-24 pb-32 relative max-w-5xl mx-auto px-6 sm:px-12 z-10 transition-all duration-1000 ${isAlurVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
-                <div className="mb-20 md:mb-28">
+                <div className="mb-20 md:mb-28 text-center">
                     <h2 className="text-xs font-black tracking-[0.3em] text-[#0095FF] uppercase mb-4">Sistem Terintegrasi</h2>
                     <h3 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-tight">
                         Dirancang untuk<br />
