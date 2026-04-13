@@ -77,7 +77,8 @@ const Landing = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#F4F7FA] via-[#E8F0F8] to-[#F4F7FA] font-jakarta text-slate-800 selection:bg-[#0095FF]/30 selection:text-[#0095FF]">
+        <div className="min-h-screen bg-gradient-to-br from-[#F4F7FA] via-[#E8F0F8] to-[#F4F7FA] font-sans text-slate-800 selection:bg-[#0095FF]/30 selection:text-[#0095FF]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+            <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap');`}</style>
 
             {/* Premium Light Background with Subtle Glowing Orbs */}
             <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
@@ -88,7 +89,7 @@ const Landing = () => {
 
             {/* Navigation */}
             <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-xl shadow-sm py-4 border-b border-slate-200/50' : 'bg-transparent py-8'}`}>
-                <div className="max-w-7xl mx-auto px-6 sm:px-12 flex items-center justify-between">
+                <div className="max-w-[1440px] mx-auto px-6 sm:px-12 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         {/* Logo */}
                         <img src="/pdam-logo.png" alt="Logo Tirta Ardhia Rinjani" className="h-20 sm:h-24 object-contain drop-shadow-sm" />
@@ -109,8 +110,16 @@ const Landing = () => {
                     {/* Left Copy */}
                     <div className="text-center lg:text-left space-y-7 animate-fade-in-up">
 
+                        {/* Live Activity Badge */}
+                        <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-blue-50/50 border border-[#0095FF]/20 backdrop-blur-sm shadow-sm">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0095FF] opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0095FF]"></span>
+                            </span>
+                            <span className="text-[10px] font-bold text-[#0095FF] tracking-[0.2em] uppercase">Sistem Siaga 24/7</span>
+                        </div>
 
-                        <h1 className="text-6xl sm:text-7xl md:text-[84px] font-black tracking-tight leading-[1.05] text-slate-900">
+                        <h1 className="text-6xl sm:text-7xl md:text-[84px] font-black tracking-tight leading-[1.05] text-slate-900 mt-2">
                             Respons Cepat,<br />
                             <span className="text-[#0095FF]">Air Lancar.</span>
                         </h1>
@@ -119,12 +128,20 @@ const Landing = () => {
                             Portal resmi aduan gangguan layanan air <span className="whitespace-nowrap font-bold text-slate-700">Perumdam Tirta Ardhia Rinjani</span>. Laporkan masalah Anda dalam hitungan detik tanpa ribet.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start pt-4">
-                            <a href="/lapor" className="w-full sm:w-auto bg-gradient-to-r from-[#0095FF] to-[#0070FF] text-white px-8 py-4 rounded-2xl text-base font-bold hover:shadow-xl hover:shadow-blue-500/30 hover:ring-4 hover:ring-blue-500/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-3 group">
-                                <i className="ph-bold ph-pencil-simple text-xl group-hover:rotate-12 transition-transform"></i> Buat Laporan
+                        <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start pt-6">
+                            {/* Premium Action Pill */}
+                            <a href="/lapor" className="bg-slate-900 text-white rounded-full pr-8 pl-2 py-2 flex items-center gap-4 hover:shadow-[0_20px_40px_-15px_rgba(15,23,42,0.5)] transition-all hover:-translate-y-1 group">
+                                <span className="w-12 h-12 bg-[#0095FF] rounded-full flex items-center justify-center text-white shadow-[0_0_15px_rgba(0,149,255,0.4)] group-hover:scale-110 group-hover:rotate-12 transition-transform">
+                                    <i className="ph-bold ph-paper-plane-right text-xl"></i>
+                                </span>
+                                <span className="font-bold tracking-wide">Buat Laporan</span>
                             </a>
-                            <a href="/lacak" className="w-full sm:w-auto bg-white text-slate-700 hover:text-slate-900 border border-slate-200 hover:border-slate-300 px-8 py-4 rounded-2xl text-base font-bold transition-all hover:bg-slate-50 hover:shadow-md flex items-center justify-center gap-3">
-                                <i className="ph-bold ph-magnifying-glass text-xl"></i> Lacak Tiket
+                            {/* Glassmorphic Secondary Action */}
+                            <a href="/lacak" className="bg-white/40 backdrop-blur-md border border-slate-200/80 text-slate-700 rounded-full pr-8 pl-3 py-2 flex items-center gap-4 hover:bg-white hover:border-[#0095FF]/30 hover:shadow-xl hover:shadow-[#0095FF]/10 transition-all hover:-translate-y-1 group">
+                                <span className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 group-hover:bg-[#0095FF]/10 group-hover:text-[#0095FF] transition-colors">
+                                    <i className="ph-bold ph-crosshair text-xl"></i>
+                                </span>
+                                <span className="font-bold tracking-wide">Lacak Status</span>
                             </a>
                         </div>
                     </div>
