@@ -119,8 +119,10 @@ const Landing = () => {
                         <div className="relative flex flex-col items-center justify-center mt-8 lg:mt-0 p-12" ref={counterRef}>
 
                             {/* The Big Number with count animation */}
-                            <div className="text-[80px] sm:text-[100px] font-black tracking-tighter leading-none flex items-center bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 drop-shadow-sm">
-                                {counter.toLocaleString('id-ID')}<span className="text-[#0095FF] ml-1">+</span>
+                            <div className="min-w-[300px] sm:min-w-[400px] flex justify-center">
+                                <div className="text-[80px] sm:text-[100px] font-black tracking-tighter leading-none flex items-center tabular-nums bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 drop-shadow-sm">
+                                    {counter.toLocaleString('id-ID')}<span className="text-[#0095FF] ml-1">+</span>
+                                </div>
                             </div>
 
                             {/* Main Subtitle */}
