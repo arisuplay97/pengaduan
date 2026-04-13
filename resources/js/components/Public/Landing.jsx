@@ -110,15 +110,6 @@ const Landing = () => {
                     {/* Left Copy */}
                     <div className="text-center lg:text-left space-y-7 animate-fade-in-up">
 
-                        {/* Live Activity Badge */}
-                        <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-blue-50/50 border border-[#0095FF]/20 backdrop-blur-sm shadow-sm">
-                            <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0095FF] opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0095FF]"></span>
-                            </span>
-                            <span className="text-[10px] font-bold text-[#0095FF] tracking-[0.2em] uppercase">Sistem Siaga 24/7</span>
-                        </div>
-
                         <h1 className="text-6xl sm:text-7xl md:text-[84px] font-black tracking-tight leading-[1.05] text-slate-900 mt-2">
                             Respons Cepat,<br />
                             <span className="text-[#0095FF]">Air Lancar.</span>
@@ -128,20 +119,14 @@ const Landing = () => {
                             Portal resmi aduan gangguan layanan air <span className="whitespace-nowrap font-bold text-slate-700">Perumdam Tirta Ardhia Rinjani</span>. Laporkan masalah Anda dalam hitungan detik tanpa ribet.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start pt-6">
-                            {/* Premium Action Pill */}
-                            <a href="/lapor" className="bg-slate-900 text-white rounded-full pr-8 pl-2 py-2 flex items-center gap-4 hover:shadow-[0_20px_40px_-15px_rgba(15,23,42,0.5)] transition-all hover:-translate-y-1 group">
-                                <span className="w-12 h-12 bg-[#0095FF] rounded-full flex items-center justify-center text-white shadow-[0_0_15px_rgba(0,149,255,0.4)] group-hover:scale-110 group-hover:rotate-12 transition-transform">
-                                    <i className="ph-bold ph-paper-plane-right text-xl"></i>
-                                </span>
-                                <span className="font-bold tracking-wide">Buat Laporan</span>
+                        <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start pt-4">
+                            <a href="/lapor" className="w-full sm:w-auto h-14 bg-gradient-to-b from-[#0095FF] to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 rounded-xl text-base font-bold shadow-[0_8px_20px_-6px_rgba(0,149,255,0.5)] hover:shadow-[0_12px_24px_-8px_rgba(0,149,255,0.6)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 group">
+                                Buat Laporan
+                                <i className="ph-bold ph-arrow-right text-lg group-hover:translate-x-1 transition-transform"></i>
                             </a>
-                            {/* Glassmorphic Secondary Action */}
-                            <a href="/lacak" className="bg-white/40 backdrop-blur-md border border-slate-200/80 text-slate-700 rounded-full pr-8 pl-3 py-2 flex items-center gap-4 hover:bg-white hover:border-[#0095FF]/30 hover:shadow-xl hover:shadow-[#0095FF]/10 transition-all hover:-translate-y-1 group">
-                                <span className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 group-hover:bg-[#0095FF]/10 group-hover:text-[#0095FF] transition-colors">
-                                    <i className="ph-bold ph-crosshair text-xl"></i>
-                                </span>
-                                <span className="font-bold tracking-wide">Lacak Status</span>
+                            <a href="/lacak" className="w-full sm:w-auto h-14 bg-white text-slate-700 border-2 border-slate-200/80 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 px-8 rounded-xl text-base font-bold shadow-sm transition-all flex items-center justify-center gap-2.5">
+                                <i className="ph-bold ph-magnifying-glass text-lg text-slate-400"></i>
+                                Cek Status Tiket
                             </a>
                         </div>
                     </div>
