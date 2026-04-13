@@ -59,7 +59,7 @@ const Landing = () => {
                     setIsAlurVisible(true);
                 }
             },
-            { threshold: 0.2 }
+            { threshold: 0.05 }
         );
 
         if (alurRef.current) {
@@ -180,7 +180,7 @@ const Landing = () => {
             </div>
 
             {/* How it Works Section - Ultra Premium Typographic List */}
-            <div ref={alurRef} className={`pt-24 pb-32 relative max-w-5xl mx-auto px-6 sm:px-12 z-10 opacity-0 ${isAlurVisible ? 'animate-fade-in-up' : ''}`}>
+            <div ref={alurRef} className={`pt-24 pb-32 relative max-w-5xl mx-auto px-6 sm:px-12 z-10 transition-all duration-1000 ${isAlurVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
                 <div className="mb-20 md:mb-28">
                     <h2 className="text-xs font-black tracking-[0.3em] text-[#0095FF] uppercase mb-4">Sistem Terintegrasi</h2>
                     <h3 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-tight">
@@ -193,7 +193,7 @@ const Landing = () => {
                     {steps.map((step, idx) => (
                         <div key={idx} className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-16 group cursor-default">
                             {/* Giant Architectural Number */}
-                            <div className="text-7xl md:text-[120px] font-black leading-none tracking-tighter text-slate-100 group-hover:text-blue-50 transition-colors duration-500 w-32 md:w-48">
+                            <div className="text-7xl md:text-[120px] font-black leading-none tracking-tighter text-slate-200 group-hover:text-[#0095FF]/20 transition-colors duration-500 w-32 md:w-48">
                                 0{idx + 1}
                             </div>
                             
