@@ -110,19 +110,19 @@ const Landing = () => {
 
             {/* Hero Section */}
             <div className="relative min-h-[100dvh] flex items-center justify-center pt-24 pb-20 z-10">
-                <div className="max-w-7xl mx-auto px-6 sm:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-8 items-center">
+                <div className="max-w-[1440px] mx-auto px-6 sm:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-12 items-center">
 
                     {/* Left Copy */}
                     <div className="text-center lg:text-left space-y-7 animate-fade-in-up">
 
 
-                        <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[1.1] text-slate-900">
+                        <h1 className="text-6xl sm:text-7xl md:text-[84px] font-black tracking-tight leading-[1.05] text-slate-900">
                             Respons Cepat,<br />
                             <span className="text-[#0095FF]">Air Lancar.</span>
                         </h1>
 
-                        <p className="text-lg text-slate-500 max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium">
-                            Portal resmi aduan gangguan layanan air Perumdam Tirta Ardhia Rinjani. Laporkan masalah Anda dalam hitungan detik tanpa ribet.
+                        <p className="text-lg md:text-xl text-slate-500 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                            Portal resmi aduan gangguan layanan air <span className="whitespace-nowrap font-bold text-slate-700">Perumdam Tirta Ardhia Rinjani</span>. Laporkan masalah Anda dalam hitungan detik tanpa ribet.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start pt-4">
@@ -136,12 +136,12 @@ const Landing = () => {
                     </div>
 
                     {/* Right Visuals - Typography Driven Statistics */}
-                    <div className="relative flex justify-center lg:justify-end animate-fade-in-up md:pr-10" style={{ animationDelay: '0.2s' }}>
+                    <div className="relative flex justify-center lg:justify-end animate-fade-in-up lg:translate-x-8" style={{ animationDelay: '0.2s' }}>
                         <div className="relative flex flex-col items-center justify-center mt-8 lg:mt-0 p-12" ref={counterRef}>
 
                             {/* The Big Number with count animation */}
-                            <div className="min-w-[300px] sm:min-w-[400px] flex justify-center">
-                                <div className="text-[80px] sm:text-[100px] font-black tracking-tighter leading-none flex items-center tabular-nums bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 drop-shadow-sm">
+                            <div className="min-w-[300px] sm:min-w-[450px] flex justify-center">
+                                <div className="text-[100px] sm:text-[130px] font-black tracking-tighter leading-none flex items-center tabular-nums bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 drop-shadow-sm">
                                     {counter.toLocaleString('id-ID')}<span className="text-[#0095FF] ml-1">+</span>
                                 </div>
                             </div>
