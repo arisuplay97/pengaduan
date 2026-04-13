@@ -172,8 +172,8 @@ const Track = ({ initialTicket, initialCode }) => {
                                         </p>
 
                                         {ticket.status !== 'pending' && ticket.user && (
-                                            <div className="mt-3 bg-white border border-slate-200 rounded-xl p-3 flex items-center gap-3 w-fit shadow-sm">
-                                                <div className="w-10 h-10 rounded-full bg-sky-50 border border-slate-200 shrink-0 flex items-center justify-center overflow-hidden">
+                                            <div className="mt-3.5 flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-slate-100 shrink-0 flex items-center justify-center overflow-hidden">
                                                     {ticket.user.photo ? (
                                                         <img src={ticket.user.photo.startsWith('http') ? ticket.user.photo : `/storage/${ticket.user.photo}`} alt={ticket.user.name} className="w-full h-full object-cover" />
                                                     ) : (
