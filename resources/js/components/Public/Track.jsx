@@ -101,6 +101,15 @@ const Track = ({ initialTicket, initialCode }) => {
                                     <p className="text-sm font-bold text-slate-800">{new Date(ticket.created_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</p>
                                 </div>
 
+                                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Pelapor</p>
+                                    <p className="text-sm font-bold text-slate-800">{ticket.reporter_name}</p>
+                                </div>
+                                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">No. HP Pelapor</p>
+                                    <p className="text-sm font-bold text-slate-800">{ticket.reporter_phone}</p>
+                                </div>
+
                                 <div className="col-span-2 bg-slate-50 rounded-2xl p-4 border border-slate-100">
                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Alamat</p>
                                     <p className="text-sm font-bold text-slate-800 leading-relaxed">{ticket.address}</p>
@@ -158,10 +167,32 @@ const Track = ({ initialTicket, initialCode }) => {
                                         <h4 className={`text-sm font-bold ${ticket.started_at || ticket.status !== 'pending' ? 'text-slate-800' : 'text-slate-400'}`}>Petugas Menuju Lokasi</h4>
                                         <p className="text-xs mt-1 font-medium text-slate-400">
                                             {ticket.started_at 
-                                                ? (ticket.user ? `Teknisi lap. ${ticket.user.name} bergerak ke titik lokasi.` : 'Teknisi dalam perjalanan ke lokasi.') 
+                                                ? (ticket.user ? `Teknisi lapangan bergerak ke titik lokasi.` : 'Teknisi dalam perjalanan ke lokasi.') 
                                                 : (ticket.status === 'pending' ? 'Menunggu ketersediaan teknisi...' : 'Teknisi sedang bersiap menuju target.')}
                                         </p>
-                                        {ticket.started_at && <p className="text-xs text-slate-400 font-bold mt-1">{new Date(ticket.started_at).toLocaleString('id-ID', { timeStyle: 'short' })} WITA</p>}
+
+                                        {ticket.status !== 'pending' && ticket.user && (
+                                            <div className="mt-3 bg-white border border-slate-200 rounded-xl p-3 flex items-center gap-3 w-fit shadow-sm">
+                                                <div className="w-10 h-10 rounded-full bg-sky-50 border border-slate-200 shrink-0 flex items-center justify-center overflow-hidden">
+                                                    {ticket.user.photo ? (
+                                                        <img src={ticket.user.photo.startsWith('http') ? ticket.user.photo : `/storage/${ticket.user.photo}`} alt={ticket.user.name} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <i className="ph-fill ph-user text-xl text-sky-600"></i>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Petugas Teknis</p>
+                                                    <p className="text-sm font-bold text-slate-800">{ticket.user.name}</p>
+                                                    {ticket.user.phone && (
+                                                        <a href={`https://wa.me/${ticket.user.phone.replace(/^0/, '62')}`} target="_blank" rel="noreferrer" className="text-xs text-green-600 font-bold flex items-center gap-1 mt-0.5 hover:text-green-700 transition">
+                                                            <i className="ph-fill ph-whatsapp-logo text-green-500 text-sm"></i> {ticket.user.phone}
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {ticket.started_at && <p className="text-xs text-slate-400 font-bold mt-2">{new Date(ticket.started_at).toLocaleString('id-ID', { timeStyle: 'short' })} WITA</p>}
                                     </div>
                                 </div>
 
