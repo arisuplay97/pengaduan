@@ -83,14 +83,7 @@ const Landing = () => {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-6">
-                        <a href="/lacak" className="text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors duration-200">
-                            Lacak Tiket
-                        </a>
-                        <a href="/lapor" className="group relative overflow-hidden bg-gradient-to-r from-[#0095FF] to-[#0070FF] text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all hover:shadow-lg hover:shadow-blue-500/30 hover:ring-4 hover:ring-blue-500/20 hover:-translate-y-0.5 flex items-center gap-2">
-                            Lapor Sekarang <i className="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                        </a>
-                    </div>
+                    {/* Navigation Buttons Removed */}
                 </div>
             </nav>
 
@@ -188,21 +181,7 @@ const Landing = () => {
                 </div>
             </div>
 
-            {/* Beautiful Light CTA */}
-            <div className="relative py-32 z-10 bg-white border-t border-slate-100">
-                <div className="max-w-4xl mx-auto text-center px-6">
-                    <div className="w-20 h-20 bg-blue-50 rounded-[24px] flex items-center justify-center mx-auto mb-8">
-                        <i className="ph-fill ph-rocket-launch text-4xl text-[#0095FF]"></i>
-                    </div>
-                    <h2 className="text-[40px] md:text-[48px] font-black mb-6 text-slate-900 tracking-tight">Siap Lapor Gangguan?</h2>
-                    <p className="text-slate-500 text-[16px] md:text-[18px] mb-12 max-w-[600px] mx-auto font-medium leading-relaxed">
-                        Jangan biarkan air mampet atau keruh mengganggu aktivitas Anda. Tim kami siap meluncur ke lokasi segera setelah laporan Anda masuk.
-                    </p>
-                    <a href="/lapor" className="group inline-flex items-center gap-3 bg-gradient-to-r from-[#0095FF] to-[#0070FF] text-white px-10 py-4 rounded-2xl text-[16px] font-bold transition-all hover:shadow-xl hover:shadow-blue-500/30 hover:ring-4 hover:ring-blue-500/20 hover:-translate-y-1">
-                        Buat Laporan Sekarang <i className="ph-bold ph-arrow-right text-xl group-hover:translate-x-1 transition-transform"></i>
-                    </a>
-                </div>
-            </div>
+
 
             <style dangerouslySetInnerHTML={{
                 __html: `
@@ -210,21 +189,7 @@ const Landing = () => {
                 .animate-fade-in-up { animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
             `}} />
 
-            {/* Floating WhatsApp Call Center Button */}
-            <a
-                href="https://wa.me/6282114005005"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 bg-[#25D366] text-white rounded-full shadow-[0_4px_14px_0_rgba(37,211,102,0.39)] hover:shadow-[0_6px_20px_rgba(37,211,102,0.23)] hover:-translate-y-1 transition-all duration-300 group"
-                title="Hubungi Call Center WhatsApp"
-            >
-                <i className="ph-fill ph-whatsapp-logo text-3xl"></i>
 
-                {/* Tooltip on hover */}
-                <span className="absolute right-16 px-3 py-1.5 bg-slate-800 text-white text-[13px] font-bold rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap shadow-xl">
-                    Call Center PDAM
-                </span>
-            </a>
         </div>
     );
 };
