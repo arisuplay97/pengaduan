@@ -6,6 +6,9 @@ const Landing = () => {
     const [counter, setCounter] = useState(0);
     const [hasAnimatedCounter, setHasAnimatedCounter] = useState(false);
 
+    const alurRef = useRef(null);
+    const [isAlurVisible, setIsAlurVisible] = useState(false);
+
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 50);
@@ -47,6 +50,24 @@ const Landing = () => {
 
         return () => observer.disconnect();
     }, [hasAnimatedCounter]);
+
+    // Alur Animation Observer
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !isAlurVisible) {
+                    setIsAlurVisible(true);
+                }
+            },
+            { threshold: 0.2 }
+        );
+
+        if (alurRef.current) {
+            observer.observe(alurRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [isAlurVisible]);
 
     const steps = [
         { icon: 'ph-note-pencil', title: 'Isi Formulir', desc: 'Masukkan data diri dan pilih jenis gangguan air.' },
@@ -160,7 +181,7 @@ const Landing = () => {
             </div>
 
             {/* How it Works Section - Light Premium Cards */}
-            <div className="pt-24 pb-32 relative max-w-7xl mx-auto px-6 sm:px-12 z-10">
+            <div ref={alurRef} className={`pt-24 pb-32 relative max-w-7xl mx-auto px-6 sm:px-12 z-10 opacity-0 ${isAlurVisible ? 'animate-fade-in-up' : ''}`}>
                 <div className="text-center mb-16">
                     <h2 className="text-sm font-bold tracking-widest text-[#0095FF] uppercase mb-3">Sistem Terintegrasi</h2>
                     <h3 className="text-3xl sm:text-4xl font-black text-slate-900">Alur Penyelesaian Gangguan</h3>
