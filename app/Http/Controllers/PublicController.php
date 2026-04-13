@@ -175,7 +175,6 @@ class PublicController extends Controller
     {
         $request->validate([
             'ticket_code'    => 'required|string|max:20',
-            'reporter_phone' => 'required|string|max:20',
             'rating'         => 'required|integer|min:1|max:5',
             'feedback'       => 'nullable|string|max:500',
         ]);
@@ -190,11 +189,6 @@ class PublicController extends Controller
         // Only completed tickets can be rated
         if ($ticket->status !== 'selesai') {
             return response()->json(['success' => false, 'message' => 'Tiket belum selesai.'], 422);
-        }
-
-        // Verify reporter ownership via phone number
-        if ($ticket->reporter_phone !== $request->reporter_phone) {
-            return response()->json(['success' => false, 'message' => 'Nomor HP tidak cocok dengan pelapor.'], 403);
         }
 
         // Prevent double rating
@@ -217,7 +211,6 @@ class PublicController extends Controller
     {
         $request->validate([
             'ticket_code'    => 'required|string|max:20',
-            'reporter_phone' => 'required|string|max:20',
         ]);
 
         $ticket = FieldJob::where('ticket_code', $this->sanitizeTicketCode($request->ticket_code))
@@ -230,11 +223,6 @@ class PublicController extends Controller
         // Only pending tickets can be cancelled by the reporter
         if ($ticket->status !== 'pending') {
             return response()->json(['success' => false, 'message' => 'Tiket sudah tidak bisa dibatalkan karena sedang/sudah diproses.'], 422);
-        }
-
-        // Verify reporter ownership via phone number
-        if ($ticket->reporter_phone !== $request->reporter_phone) {
-            return response()->json(['success' => false, 'message' => 'Nomor HP tidak cocok dengan pelapor.'], 403);
         }
 
         $ticket->update([

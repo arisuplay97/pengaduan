@@ -16,13 +16,8 @@ const Track = ({ initialTicket, initialCode }) => {
 
     // Cancel state
     const [showCancelModal, setShowCancelModal] = useState(false);
-    const [cancelPhone, setCancelPhone] = useState('');
     const [cancelLoading, setCancelLoading] = useState(false);
     const [cancelError, setCancelError] = useState('');
-
-    // Rating modal phone verification
-    const [showRatingPhone, setShowRatingPhone] = useState(false);
-    const [ratingPhone, setRatingPhone] = useState('');
 
     // CSRF token helper
     const getCsrf = () => document.querySelector('meta[name="csrf-token"]')?.content || '';
@@ -70,7 +65,6 @@ const Track = ({ initialTicket, initialCode }) => {
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrf() },
                 body: JSON.stringify({
                     ticket_code: ticket.ticket_code,
-                    reporter_phone: ratingPhone,
                     rating: selectedStar,
                     feedback: ratingFeedback,
                 }),
@@ -78,7 +72,6 @@ const Track = ({ initialTicket, initialCode }) => {
             const data = await res.json();
             if (data.success) {
                 setRatingSubmitted(true);
-                setShowRatingPhone(false);
             } else {
                 setRatingError(data.message || 'Gagal mengirim rating.');
             }
@@ -99,7 +92,6 @@ const Track = ({ initialTicket, initialCode }) => {
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrf() },
                 body: JSON.stringify({
                     ticket_code: ticket.ticket_code,
-                    reporter_phone: cancelPhone,
                 }),
             });
             const data = await res.json();
@@ -423,7 +415,7 @@ const Track = ({ initialTicket, initialCode }) => {
                                         <p className="text-sm font-bold text-slate-700">Terima kasih atas penilaian Anda!</p>
                                         <p className="text-xs text-slate-400 mt-1">Masukan Anda sangat berharga untuk peningkatan layanan kami.</p>
                                     </div>
-                                ) : !showRatingPhone ? (
+                                ) : (
                                     <div className="text-center">
                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Bagaimana pelayanan kami?</p>
                                         <div className="flex justify-center gap-2 mb-4">
@@ -448,37 +440,16 @@ const Track = ({ initialTicket, initialCode }) => {
                                                     maxLength={500}
                                                     className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm resize-none h-20 focus:ring-2 focus:ring-sky-400 focus:bg-white transition"
                                                 />
+                                                {ratingError && <p className="text-xs text-red-500 font-bold">{ratingError}</p>}
                                                 <button
-                                                    onClick={() => setShowRatingPhone(true)}
-                                                    className="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-xl text-sm transition hover:-translate-y-0.5 shadow-sm"
+                                                    onClick={handleSubmitRating}
+                                                    disabled={ratingLoading}
+                                                    className="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-xl text-sm transition hover:-translate-y-0.5 shadow-sm disabled:opacity-50"
                                                 >
-                                                    Kirim Penilaian
+                                                    {ratingLoading ? 'Mengirim...' : 'Kirim Penilaian'}
                                                 </button>
                                             </div>
                                         )}
-                                    </div>
-                                ) : (
-                                    <div className="text-center space-y-3 animate-fade-in-up">
-                                        <p className="text-sm font-bold text-slate-700">Verifikasi Nomor HP Pelapor</p>
-                                        <p className="text-xs text-slate-400">Masukkan nomor HP yang Anda gunakan saat membuat laporan ini.</p>
-                                        <input
-                                            type="tel"
-                                            value={ratingPhone}
-                                            onChange={(e) => setRatingPhone(e.target.value)}
-                                            placeholder="Contoh: 081234567890"
-                                            className="w-full max-w-xs mx-auto p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-center font-mono focus:ring-2 focus:ring-sky-400 transition"
-                                        />
-                                        {ratingError && <p className="text-xs text-red-500 font-bold">{ratingError}</p>}
-                                        <div className="flex gap-2 justify-center">
-                                            <button onClick={() => setShowRatingPhone(false)} className="px-4 py-2 text-sm font-bold text-slate-500 bg-slate-100 rounded-xl hover:bg-slate-200 transition">Kembali</button>
-                                            <button
-                                                onClick={handleSubmitRating}
-                                                disabled={ratingLoading || !ratingPhone}
-                                                className="px-6 py-2 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-xl text-sm transition disabled:opacity-50"
-                                            >
-                                                {ratingLoading ? 'Mengirim...' : 'Konfirmasi'}
-                                            </button>
-                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -497,15 +468,8 @@ const Track = ({ initialTicket, initialCode }) => {
                                 <i className="ph-fill ph-warning text-red-500 text-3xl"></i>
                             </div>
                             <h3 className="text-xl font-black text-slate-900 mb-2">Batalkan Laporan?</h3>
-                            <p className="text-sm text-slate-500">Tindakan ini tidak bisa dibatalkan. Mohon masukkan nomor HP yang Anda gunakan saat melapor untuk verifikasi.</p>
+                            <p className="text-sm text-slate-500">Tindakan ini tidak bisa dibatalkan. Apakah Anda yakin ingin membatalkan laporan ini?</p>
                         </div>
-                        <input
-                            type="tel"
-                            value={cancelPhone}
-                            onChange={(e) => setCancelPhone(e.target.value)}
-                            placeholder="Masukkan No. HP Pelapor"
-                            className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-mono text-center mb-4 focus:ring-2 focus:ring-red-400 transition"
-                        />
                         {cancelError && <p className="text-xs text-red-500 font-bold text-center mb-3">{cancelError}</p>}
                         <div className="flex gap-3">
                             <button onClick={() => setShowCancelModal(false)} className="flex-1 py-3 text-sm font-bold text-slate-600 bg-slate-100 rounded-2xl hover:bg-slate-200 transition">
@@ -513,7 +477,7 @@ const Track = ({ initialTicket, initialCode }) => {
                             </button>
                             <button
                                 onClick={handleCancel}
-                                disabled={cancelLoading || !cancelPhone}
+                                disabled={cancelLoading}
                                 className="flex-1 py-3 text-sm font-bold text-white bg-red-500 hover:bg-red-600 rounded-2xl transition disabled:opacity-50"
                             >
                                 {cancelLoading ? 'Memproses...' : 'Ya, Batalkan'}
