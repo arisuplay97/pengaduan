@@ -109,7 +109,7 @@ const Landing = () => {
             </nav>
 
             {/* Hero Section */}
-            <div className="relative pt-44 pb-20 justify-center z-10">
+            <div className="relative min-h-[100dvh] flex items-center justify-center pt-24 pb-20 z-10">
                 <div className="max-w-7xl mx-auto px-6 sm:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-8 items-center">
 
                     {/* Left Copy */}
