@@ -154,24 +154,23 @@ const Landing = () => {
                             {/* Divider Line */}
                             <div className="w-24 h-1 bg-slate-200 rounded-full my-8"></div>
 
-                            {/* Secondary Stats (Replacing the floating badges) */}
-                            <div className="flex items-center gap-12 w-full justify-center">
+                            {/* Secondary Stats - Typographic Approach */}
+                            <div className="flex items-center gap-8 sm:gap-16 w-full justify-center">
                                 {/* Layanan */}
                                 <div className="text-center group cursor-default">
-                                    <div className="w-12 h-12 rounded-[16px] bg-emerald-50 text-emerald-500 flex items-center justify-center mx-auto mb-3 group-hover:-translate-y-1 transition-transform">
-                                        <i className="ph-fill ph-check-circle text-2xl"></i>
+                                    <div className="text-4xl sm:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-emerald-600 mb-2 group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
+                                        24/7
                                     </div>
-                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Layanan</p>
-                                    <p className="text-lg font-black text-slate-800">24 Jam</p>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Siap Melayani</p>
                                 </div>
-
+                                {/* Thin Divider */}
+                                <div className="w-px h-16 bg-slate-200/60 rounded-full"></div>
                                 {/* Cakupan */}
                                 <div className="text-center group cursor-default">
-                                    <div className="w-12 h-12 rounded-[16px] bg-blue-50 text-[#0095FF] flex items-center justify-center mx-auto mb-3 group-hover:-translate-y-1 transition-transform">
-                                        <i className="ph-fill ph-map-pin text-2xl"></i>
+                                    <div className="text-4xl sm:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-[#0095FF] to-blue-600 mb-2 group-hover:scale-110 group-hover:-rotate-2 transition-transform duration-300">
+                                        12
                                     </div>
-                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Cakupan</p>
-                                    <p className="text-lg font-black text-slate-800">12 Kecamatan</p>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Kecamatan</p>
                                 </div>
                             </div>
 
@@ -180,25 +179,38 @@ const Landing = () => {
                 </div>
             </div>
 
-            {/* How it Works Section - Light Premium Cards */}
-            <div ref={alurRef} className={`pt-24 pb-32 relative max-w-7xl mx-auto px-6 sm:px-12 z-10 opacity-0 ${isAlurVisible ? 'animate-fade-in-up' : ''}`}>
-                <div className="text-center mb-16">
-                    <h2 className="text-sm font-bold tracking-widest text-[#0095FF] uppercase mb-3">Sistem Terintegrasi</h2>
-                    <h3 className="text-3xl sm:text-4xl font-black text-slate-900">Alur Penyelesaian Gangguan</h3>
+            {/* How it Works Section - Ultra Premium Typographic List */}
+            <div ref={alurRef} className={`pt-24 pb-32 relative max-w-5xl mx-auto px-6 sm:px-12 z-10 opacity-0 ${isAlurVisible ? 'animate-fade-in-up' : ''}`}>
+                <div className="mb-20 md:mb-28">
+                    <h2 className="text-xs font-black tracking-[0.3em] text-[#0095FF] uppercase mb-4">Sistem Terintegrasi</h2>
+                    <h3 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-tight">
+                        Dirancang untuk<br />
+                        <span className="text-slate-400">Efisiensi Maksimal.</span>
+                    </h3>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="flex flex-col gap-12 md:gap-20">
                     {steps.map((step, idx) => (
-                        <div key={idx} className="bg-white border border-slate-100 rounded-[28px] p-8 hover:border-blue-100 hover:shadow-[0_20px_40px_-15px_rgba(0,149,255,0.15)] transition-all duration-300 flex flex-col items-start shadow-sm group">
-                            <div className="w-14 h-14 bg-slate-50 border border-slate-100 group-hover:bg-[#0095FF] rounded-[18px] flex items-center justify-center mb-6 transition-colors duration-300">
-                                <i className={`ph-bold ${step.icon} text-2xl text-slate-600 group-hover:text-white transition-colors duration-300`}></i>
+                        <div key={idx} className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-16 group cursor-default">
+                            {/* Giant Architectural Number */}
+                            <div className="text-7xl md:text-[120px] font-black leading-none tracking-tighter text-slate-100 group-hover:text-blue-50 transition-colors duration-500 w-32 md:w-48">
+                                0{idx + 1}
                             </div>
-                            <h4 className="text-[18px] font-bold text-slate-900 mb-2.5 flex items-center gap-2 tracking-tight">
-                                <span className="text-[#0095FF] text-[13px] bg-blue-50 px-2 py-0.5 rounded-md">0{idx + 1}</span> {step.title}
-                            </h4>
-                            <p className="text-slate-500 text-[14px] leading-relaxed font-medium">
-                                {step.desc}
-                            </p>
+                            
+                            {/* Vertical Accent Line */}
+                            <div className="hidden md:block w-0.5 h-24 bg-slate-100 relative overflow-hidden">
+                                <div className="absolute top-0 left-0 w-full h-full bg-[#0095FF] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
+                            </div>
+
+                            {/* Typographic Content */}
+                            <div className="flex-1 max-w-xl">
+                                <h4 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4 tracking-tight group-hover:text-[#0095FF] transition-colors duration-300">
+                                    {step.title}
+                                </h4>
+                                <p className="text-slate-500 text-base md:text-lg leading-relaxed md:leading-loose">
+                                    {step.desc}
+                                </p>
+                            </div>
                         </div>
                     ))}
                 </div>
