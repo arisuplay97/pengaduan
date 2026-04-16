@@ -180,14 +180,14 @@ const Report = ({ kecamatans }) => {
 
                 {/* Progress Tabs */}
                 <div className="flex items-center justify-center mb-8">
-                    <div className={`flex items-center px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border ${step === 1 ? 'bg-sky-50 text-sky-700 border-sky-200 shadow-sm' : 'bg-white text-slate-500 border-slate-200'}`}>
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] mr-2.5 ${step === 1 ? 'bg-sky-600 text-white' : 'bg-slate-200 text-slate-500'}`}>1</span>
+                    <div className={`flex items-center px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border ${step === 1 ? 'bg-[#F2F8FF] text-[#0070e0] border-[#cce4ff] shadow-sm' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}>
+                        <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2 font-bold ${step === 1 ? 'bg-[#0084FF] text-white' : 'bg-slate-200 text-slate-500'}`}>1</span>
                         Data Diri
                     </div>
-                    <div className={`w-10 h-px mx-2 ${step > 1 ? 'bg-sky-300' : 'bg-slate-200'}`}></div>
-                    <div className={`flex items-center px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border ${step === 2 ? 'bg-sky-50 text-sky-700 border-sky-200 shadow-sm' : 'bg-white text-slate-500 border-slate-200'}`}>
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] mr-2.5 ${step === 2 ? 'bg-sky-600 text-white' : 'bg-slate-200 text-slate-500'}`}>2</span>
-                        Lokasi & Geotagging
+                    <div className={`w-12 h-px mx-3 ${step > 1 ? 'bg-[#0084FF]' : 'bg-slate-200'}`}></div>
+                    <div className={`flex items-center px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border ${step === 2 ? 'bg-[#F2F8FF] text-[#0070e0] border-[#cce4ff] shadow-sm' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}>
+                        <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2 font-bold ${step === 2 ? 'bg-[#0084FF] text-white' : 'bg-slate-200 text-slate-500'}`}>2</span>
+                        Lokasi
                     </div>
                 </div>
 
@@ -228,9 +228,6 @@ const Report = ({ kecamatans }) => {
                                     className={`w-full bg-white border ${isProblemDropdownOpen ? 'border-sky-500 ring-2 ring-sky-500/20' : 'border-slate-300'} rounded-xl px-4 py-3.5 text-sm font-medium flex items-center justify-between cursor-pointer transition select-none ${selectedProblem ? 'text-slate-800' : 'text-slate-400'}`}
                                 >
                                     <div className="flex items-center gap-3">
-                                        {selectedProblem && (
-                                            <div className={`w-4 h-4 rounded-full ${selectedProblem.color}`}></div>
-                                        )}
                                         {selectedProblem ? selectedProblem.id : 'Pilih Jenis Gangguan...'}
                                     </div>
                                     <i className={`ph-bold ph-caret-down transition-transform ${isProblemDropdownOpen ? 'rotate-180 text-sky-500' : 'text-slate-400'}`}></i>
@@ -248,10 +245,9 @@ const Report = ({ kecamatans }) => {
                                                 <div
                                                     key={pt.id}
                                                     onClick={() => handleSelectProblem(pt.id)}
-                                                    className={`w-full px-4 py-3 flex items-center gap-3 cursor-pointer hover:bg-slate-50 transition-colors ${formData.title === pt.id ? 'bg-sky-50/50' : ''}`}
+                                                    className={`w-full px-4 py-3.5 flex items-center gap-3 cursor-pointer hover:bg-slate-50 transition-colors ${formData.title === pt.id ? 'bg-[#F2F8FF]' : ''}`}
                                                 >
-                                                    <div className={`w-[14px] h-[14px] rounded-full ${pt.color}`}></div>
-                                                    <span className="text-[15px] text-[#294B73] font-medium tracking-wide">{pt.id}</span>
+                                                    <span className={`text-[15px] font-medium ${formData.title === pt.id ? 'text-[#0070e0]' : 'text-slate-600'}`}>{pt.id}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -259,7 +255,7 @@ const Report = ({ kecamatans }) => {
                                 )}
                             </div>
 
-                            <button onClick={handleNext} className="w-full mt-8 bg-[#0092FF] hover:bg-[#0080FF] text-white py-4 rounded-xl font-bold transition shadow-[0_4px_14px_0_rgba(0,118,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,118,255,0.23)] hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                            <button onClick={handleNext} className="w-full mt-8 bg-[#0084FF] hover:bg-[#0070e0] text-white py-4 rounded-xl font-bold transition shadow-[0_4px_14px_0_rgba(0,118,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,118,255,0.23)] hover:-translate-y-0.5 flex items-center justify-center gap-2">
                                 Lanjutkan <i className="ph-bold ph-arrow-right"></i>
                             </button>
                         </div>
@@ -292,7 +288,7 @@ const Report = ({ kecamatans }) => {
                                 <div className="flex items-center justify-between mb-4">
                                     <div>
                                         <h4 className="text-[13px] font-bold text-slate-800 flex items-center gap-1.5">
-                                            <i className="ph-fill ph-map-pin text-sky-500"></i> Geotagging
+                                            <i className="ph-fill ph-map-pin text-sky-500"></i> Lokasi
                                         </h4>
                                         <p className="text-[10px] text-slate-500 mt-0.5">{gpsStatus}</p>
                                     </div>

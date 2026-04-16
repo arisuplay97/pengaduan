@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentasi Aduan Pelanggan PDAM</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f111a;
+            --text-color: #f1f5f9;
+            --primary-glow: #00f2fe;
+            --secondary-glow: #4facfe;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        /* Animated Background Gradients */
+        .bg-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.3) 0%, rgba(0, 242, 254, 0.1) 100%);
+            filter: blur(100px);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+        
+        .bg-glow-2 {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(132, 94, 252, 0.2) 0%, rgba(35, 213, 171, 0.1) 100%);
+            filter: blur(120px);
+            border-radius: 50%;
+            bottom: -100px;
+            right: -100px;
+            z-index: -1;
+            animation: float2 12s infinite alternate ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-50px) scale(1.1); }
+        }
+
+        @keyframes float2 {
+            0% { transform: translateX(0px) translateY(0px); }
+            100% { transform: translateX(-50px) translateY(-50px); }
+        }
+
+        /* Presentation Container */
+        .presentation-container {
+            width: 90vw;
+            height: 85vh;
+            max-width: 1400px;
+            position: relative;
+            background: rgba(15, 17, 26, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Slide Container */
+        .slides {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            padding: 3rem 4rem;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: all;
+        }
+
+        /* Base Typography */
+        .text-gradient {
+            background: linear-gradient(to right, var(--secondary-glow) 0%, var(--primary-glow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        p {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: #94a3b8;
+        }
+
+        /* Center Slide */
+        .slide-center {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Badge Styles */
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .badge-selesai { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .badge-progress { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .badge-pending { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-source { background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            width: 100%;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+        }
+
+        .stat-card:nth-child(1)::before { background: #f87171; }
+        .stat-card:nth-child(2)::before { background: #facc15; }
+        .stat-card:nth-child(3)::before { background: #4ade80; }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .stat-value {
+            font-size: 4rem;
+            font-weight: 800;
+            margin: 1rem 0;
+            color: white;
+        }
+
+        /* Detail Aduan Card */
+        .aduan-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            height: 100%;
+        }
+
+        .aduan-info, .aduan-visual {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .aduan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .ticket-code {
+            font-family: monospace;
+            font-size: 1.25rem;
+            color: #94a3b8;
+            letter-spacing: 2px;
+        }
+
+        .info-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 1.25rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Timeline / Progress */
+        .timeline {
+            margin-top: auto;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            top: 5px;
+            box-shadow: 0 0 0 4px rgba(15,17,26,1);
+        }
+
+        .timeline-item.done::before { background: #4ade80; }
+        .timeline-item.active::before { background: #3b82f6; box-shadow: 0 0 0 4px rgba(15,17,26,1), 0 0 10px #3b82f6; }
+
+        .time { font-size: 0.85rem; color: #94a3b8; }
+        .event { font-weight: 600; color: white; }
+
+        /* Images placeholder */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            height: 100%;
+        }
+
+        .photo-card {
+            background: rgba(0,0,0,0.2);
+            border: 1px dashed rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #64748b;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Mock specific images styling */
+        .photo-card.has-image::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.6);
+            z-index: 0;
+        }
+
+        .photo-before-1::before { background-image: url('https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&q=80&w=400'); }
+        .photo-after-1::before { background-image: url('https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?auto=format&fit=crop&q=80&w=400'); }
+        
+        .photo-before-2::before { background-image: url('https://images.unsplash.com/photo-1585002131580-03a110bbd743?auto=format&fit=crop&q=80&w=400'); }
+
+        .photo-label {
+            z-index: 1;
+            background: rgba(0,0,0,0.6);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: white;
+            font-weight: 600;
+        }
+
+
+        /* Controls */
+        .controls {
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid var(--card-border);
+        }
+
+        .slide-indicator {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            width: 30px;
+            border-radius: 5px;
+            background: var(--primary-glow);
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-glow);
+            color: var(--bg-color);
+            transform: scale(1.1);
+        }
+
+        .nav-btn svg { width: 24px; height: 24px; }
+        
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Icons SVG */
+        .icon-svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+    <div class="bg-glow-2"></div>
+
+    <div class="presentation-container">
+        <div class="slides">
+            
+            <!-- Slide 1: Cover -->
+            <div class="slide slide-center active" id="slide-0">
+                <div style="max-width: 800px;">
+                    <div style="margin-bottom: 2rem;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#4facfe" />
+                                    <stop offset="100%" stop-color="#00f2fe" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <h1>Laporan Lengkap <br> <span class="text-gradient">Aduan Pelanggan</span></h1>
+                    <p style="margin-top: 1.5rem; font-size: 1.4rem;">Sistem Informasi Manajemen Aduan Pelanggan (SIMAP)<br> PDAM Kota</p>
+                    
+                    <div style="margin-top: 3rem; display: inline-block; padding: 1rem 2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px;">
+                        Gunakan panah &rarr; untuk navigasi presentasi
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Dashboard Summary -->
+            <div class="slide" id="slide-1">
+                <h2>Ringkasan Eksekutif Penanganan</h2>
+                <p>Status terkini seluruh aduan lapangan yang diterima melalui berbagai channel (WhatsApp, Call Center, Mobile App).</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="info-label">Menunggu (Pending)</div>
+                        <div class="stat-value">24</div>
+                        <p>Aduan baru belum ditangani</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="info-label">Dalam Proses (On Progress)</div>
+                        <div class="stat-value">12</div>
+                        <p>Sedang dikerjakan petugas lapangan</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="info-label">Selesai (Resolved)</div>
+                        <div class="stat-value">145</div>
+                        <p>Total aduan terselesaikan bulan ini</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 3rem; background: var(--card-bg); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <div style="font-size: 1.2rem; color: white; font-weight: 600;">Efisiensi Penanganan</div>
+                        <div style="color: #94a3b8; font-size: 0.9rem;">Rata-rata waktu penyelesaian: 2 Jam 45 Menit</div>
+                    </div>
+                    <div style="font-size: 2rem; font-weight: 800; color: #4ade80;">94% SLA</div>
+                </div>
+            </div>
+
+            <!-- Slide 3: Detial Aduan Selesai -->
+            <div class="slide" id="slide-2">
+                <h2>Studi Kasus 1: <span style="font-weight: 300;">Penanganan Cepat</span></h2>
+                
+                <div class="aduan-layout">
+                    <div class="aduan-info">
+                        <div class="aduan-header">
+                            <div>
+                                <div class="ticket-code">TSA-0426-0001</div>
+                                <h3 style="font-size: 1.8rem; margin-top: 0.5rem; color: white;">Pipa Bocor Utama</h3>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
+                                <span class="badge badge-selesai">✓ Selesai</span>
+                                <span class="badge badge-source">📱 WhatsApp</span>
+                            </div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label">Pelapor</div>
+                            <div class="info-value">Budi Santoso (0812-3456-7890)</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Lokasi</div>
+                            <div class="info-value">Jl. Merdeka No. 10, Kecamatan Klojen</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Tipe Masalah</div>
+                            <div class="info-value">Kebocoran Pipa utama (Resiko Tinggi)</div>
+                        </div>
+
+                        <div class="timeline">
+                            <div class="timeline-item done">
+                                <span class="time">16 Apr 2026, 09:00</span>
+                                <div class="event">Aduan Diterima & Tiket Dibuat</div>
+                            </div>
+                            <div class="timeline-item done">
+                                <span class="time">16 Apr 2026, 09:15</span>
+                                <div class="event">Petugas Meluncur ke Lokasi</div>
+                            </div>
+                            <div class="timeline-item done">
+                                <span class="time">16 Apr 2026, 11:30</span>
+                                <div class="event">Pekerjaan Selesai</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="aduan-visual">
+                        <div class="info-label" style="margin-bottom: 1rem;">Dokumentasi Lapangan</div>
+                        <div class="photo-grid">
+                            <div class="photo-card has-image photo-before-1">
+                                <span class="photo-label">Foto Sebelum</span>
+                            </div>
+                            <div class="photo-card has-image photo-after-1">
+                                <span class="photo-label">Foto Sesudah</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1.5rem; background: rgba(34, 197, 94, 0.1); padding: 1rem; border-radius: 12px; border: 1px solid rgba(34,197,94,0.2);">
+                            <div class="info-label" style="color: #4ade80;">Ulasan Pelanggan</div>
+                            <div style="color: white; font-style: italic;">"Cepat sekali responnya, air sudah tidak menggenang di jalan lagi. Terima kasih PDAM." ⭐⭐⭐⭐⭐</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4: Detial Aduan On Progress -->
+            <div class="slide" id="slide-3">
+                <h2>Studi Kasus 2: <span style="font-weight: 300;">Dalam Pengerjaan</span></h2>
+                
+                <div class="aduan-layout">
+                    <div class="aduan-info">
+                        <div class="aduan-header">
+                            <div>
+                                <div class="ticket-code">TSA-0426-0002</div>
+                                <h3 style="font-size: 1.8rem; margin-top: 0.5rem; color: white;">Air Keruh & Berbau</h3>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
+                                <span class="badge badge-progress">⚙️ On Progress</span>
+                                <span class="badge badge-source">🌐 Mobile App</span>
+                            </div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label">Pelapor</div>
+                            <div class="info-value">Siti Aisyah (CUST-9012)</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Lokasi</div>
+                            <div class="info-value">Perumahan Griya Indah Blok A1</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Tipe Masalah</div>
+                            <div class="info-value">Kualitas Air</div>
+                        </div>
+
+                        <div class="timeline">
+                            <div class="timeline-item done">
+                                <span class="time">16 Apr 2026, 13:00</span>
+                                <div class="event">Aduan Masuk via App</div>
+                            </div>
+                            <div class="timeline-item active">
+                                <span class="time">16 Apr 2026, 13:45</span>
+                                <div class="event">Proses Flushing Pipa Cabang (Sedang Berlangsung)</div>
+                            </div>
+                            <div class="timeline-item">
+                                <span class="time">Estimasi: 16:00</span>
+                                <div class="event">Verifikasi Kualitas Air</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="aduan-visual">
+                        <div class="info-label" style="margin-bottom: 1rem;">Dokumentasi Lapangan</div>
+                        <div class="photo-grid">
+                            <div class="photo-card has-image photo-before-2">
+                                <span class="photo-label">Kondisi Awal</span>
+                            </div>
+                            <div class="photo-card" style="border-style: dashed;">
+                                <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom: 0.5rem; opacity: 0.5;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>Menunggu Selesai</span>
+                            </div>
+                        </div>
+                         <div style="margin-top: 1.5rem; background: rgba(234, 179, 8, 0.1); padding: 1rem; border-radius: 12px; border: 1px solid rgba(234, 179, 8, 0.2);">
+                            <div class="info-label" style="color: #facc15;">Catatan Teknisi</div>
+                            <div style="color: white; font-style: italic;">"Terindikasi ada endapan lumpur setelah perbaikan pusat kemarin. Flusing sedang dilakukan."</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5: Detial Aduan Pending -->
+             <div class="slide" id="slide-4">
+                <h2>Studi Kasus 3: <span style="font-weight: 300;">Antrian Baru</span></h2>
+                
+                <div class="aduan-layout">
+                    <div class="aduan-info">
+                        <div class="aduan-header">
+                            <div>
+                                <div class="ticket-code">TSA-0426-0003</div>
+                                <h3 style="font-size: 1.8rem; margin-top: 0.5rem; color: white;">Meteran Air Rusak/Bocor</h3>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
+                                <span class="badge badge-pending">⏳ Pending</span>
+                                <span class="badge badge-source">📞 Call Center</span>
+                            </div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label">Pelapor</div>
+                            <div class="info-value">Andi Saputra (0856-9999-123)</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Lokasi</div>
+                            <div class="info-value">Jl. Sudirman No 45</div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-label">Tipe Masalah</div>
+                            <div class="info-value">Kerusakan Meteran / Pipa Persil</div>
+                        </div>
+
+                        <div class="timeline">
+                            <div class="timeline-item done">
+                                <span class="time">Baru Saja</span>
+                                <div class="event">Tiket Terdistribusi ke Area Pusat</div>
+                            </div>
+                            <div class="timeline-item">
+                                <span class="time">Menunggu Penjadwalan</span>
+                                <div class="event">Alokasi Petugas Lapangan</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="aduan-visual" style="justify-content: center; align-items: center; text-align: center;">
+                        <svg width="64" height="64" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom: 1rem;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <h3 style="color: white; margin-bottom: 0.5rem;">Membutuhkan Persetujuan Ganti Meter</h3>
+                        <p style="font-size: 1rem;">Sistem sedang mencarikan petugas dengan stok meter air 1/2 inch yang tersedia, harap menunggu konfirmasi unit gudang.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 6: Penutup -->
+            <div class="slide slide-center" id="slide-5">
+                <div style="max-width: 800px;">
+                    <h1 style="font-size: 3rem;">Terima Kasih</h1>
+                    <p style="margin-top: 1rem; font-size: 1.25rem;">Laporan lengkap penanganan aduan telah disajikan.<br>Kami berkomitmen untuk terus meningkatkan pelayanan air bersih bagi masyarakat.</p>
+                    
+                    <button onclick="goToSlide(0)" style="margin-top: 3rem; padding: 1rem 2.5rem; background: transparent; border: 1px solid var(--primary-glow); color: var(--primary-glow); border-radius: 50px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; font-family: 'Outfit';">
+                        Kembali ke Awal
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="controls">
+            <div class="slide-indicator" id="indicators">
+                <!-- Dots injected via JS -->
+            </div>
+            
+            <div class="btn-group">
+                <button class="nav-btn" onclick="prevSlide()" id="btnPrev">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <button class="nav-btn" onclick="nextSlide()" id="btnNext">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const totalSlides = 6;
+        let currentSlide = 0;
+        const indicatorsContainer = document.getElementById('indicators');
+
+        // Initialize dots
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot' + (i === 0 ? ' active' : '');
+            dot.onclick = () => goToSlide(i);
+            indicatorsContainer.appendChild(dot);
+        }
+
+        function updateUI() {
+            // Update slides
+            for (let i = 0; i < totalSlides; i++) {
+                document.getElementById('slide-' + i).classList.remove('active');
+                indicatorsContainer.children[i].classList.remove('active');
+            }
+            
+            document.getElementById('slide-' + currentSlide).classList.add('active');
+            indicatorsContainer.children[currentSlide].classList.add('active');
+
+            // Button states
+            document.getElementById('btnPrev').style.opacity = currentSlide === 0 ? '0.5' : '1';
+            document.getElementById('btnNext').style.opacity = currentSlide === totalSlides - 1 ? '0.5' : '1';
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateUI();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Initialize UI
+        updateUI();
+    </script>
+</body>
+</html>
