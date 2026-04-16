@@ -199,38 +199,38 @@ const Report = ({ kecamatans }) => {
                         <div className="space-y-6 animate-fade-in-up">
 
                             <div>
-                                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Nama Lengkap</label>
-                                <input type="text" name="reporter_name" value={formData.reporter_name} onChange={handleChange} className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3.5 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition placeholder-slate-400" />
+                                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2.5">NAMA LENGKAP</label>
+                                <input type="text" name="reporter_name" value={formData.reporter_name} onChange={handleChange} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-[15px] font-medium text-slate-800 focus:border-[#0084FF] focus:ring-4 focus:ring-[#0084FF]/10 outline-none transition-all placeholder-slate-400 shadow-[0_1px_2px_rgba(0,0,0,0.02)]" />
                             </div>
 
                             <div>
-                                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">No. Pelanggan</label>
-                                <input type="text" name="customer_id" value={formData.customer_id} onChange={handleChange} className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3.5 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition placeholder-slate-400" />
+                                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2.5">NO. PELANGGAN</label>
+                                <input type="text" name="customer_id" value={formData.customer_id} onChange={handleChange} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-[15px] font-medium text-slate-800 focus:border-[#0084FF] focus:ring-4 focus:ring-[#0084FF]/10 outline-none transition-all placeholder-slate-400 shadow-[0_1px_2px_rgba(0,0,0,0.02)]" />
                             </div>
 
                             <div>
-                                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">No WhatsApp</label>
+                                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2.5">NO WHATSAPP</label>
                                 <div className="relative">
                                     <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/20px-Flag_of_Indonesia.svg.png" alt="ID" className="w-5 h-4 object-cover rounded-[2px]" />
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/20px-Flag_of_Indonesia.svg.png" alt="ID" className="w-[18px] h-[13px] object-cover rounded-[2px]" />
                                     </div>
-                                    <input type="tel" name="reporter_phone" value={formData.reporter_phone} onChange={handleChange} placeholder="08xxxxxxxxxxx" className="w-full bg-white border border-slate-300 rounded-xl pl-12 pr-4 py-3.5 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 outline-none transition placeholder-slate-400" />
+                                    <input type="tel" name="reporter_phone" value={formData.reporter_phone} onChange={handleChange} placeholder="08xxxxxxxxxxx" className="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3.5 text-[15px] font-medium text-slate-800 focus:border-[#0084FF] focus:ring-4 focus:ring-[#0084FF]/10 outline-none transition-all placeholder-slate-400 shadow-[0_1px_2px_rgba(0,0,0,0.02)]" />
                                 </div>
-                                <p className="text-[11px] text-slate-500 mt-2 font-medium bg-slate-50 inline-block px-2 py-1 rounded">No WA wajib diawali dengan 08</p>
+                                <p className="text-[11px] text-slate-500 mt-2 font-medium bg-[#F8FAFC] inline-block px-3 py-1.5 rounded-lg border border-slate-100">No WA wajib diawali dengan 08</p>
                             </div>
 
                             {/* Custom Dropdown exactly mirroring image 4 */}
                             <div className="relative" ref={problemDropdownRef}>
-                                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Jenis Gangguan</label>
+                                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2.5">JENIS GANGGUAN</label>
 
                                 <div
                                     onClick={() => setIsProblemDropdownOpen(!isProblemDropdownOpen)}
-                                    className={`w-full bg-white border ${isProblemDropdownOpen ? 'border-sky-500 ring-2 ring-sky-500/20' : 'border-slate-300'} rounded-xl px-4 py-3.5 text-sm font-medium flex items-center justify-between cursor-pointer transition select-none ${selectedProblem ? 'text-slate-800' : 'text-slate-400'}`}
+                                    className={`w-full bg-white border ${isProblemDropdownOpen ? 'border-[#0084FF] ring-4 ring-[#0084FF]/10' : 'border-slate-200 shadow-[0_1px_2px_rgba(0,0,0,0.02)]'} rounded-xl px-4 py-3.5 text-[15px] font-medium flex items-center justify-between cursor-pointer transition-all select-none ${selectedProblem ? 'text-slate-800' : 'text-slate-400'}`}
                                 >
                                     <div className="flex items-center gap-3">
                                         {selectedProblem ? selectedProblem.id : 'Pilih Jenis Gangguan...'}
                                     </div>
-                                    <i className={`ph-bold ph-caret-down transition-transform ${isProblemDropdownOpen ? 'rotate-180 text-sky-500' : 'text-slate-400'}`}></i>
+                                    <i className={`ph-bold ph-caret-down transition-transform ${isProblemDropdownOpen ? 'rotate-180 text-[#0084FF]' : 'text-slate-400'}`}></i>
                                 </div>
 
                                 {isProblemDropdownOpen && (
@@ -255,8 +255,8 @@ const Report = ({ kecamatans }) => {
                                 )}
                             </div>
 
-                            <button onClick={handleNext} className="w-full mt-8 bg-[#0084FF] hover:bg-[#0070e0] text-white py-4 rounded-xl font-bold transition shadow-[0_4px_14px_0_rgba(0,118,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,118,255,0.23)] hover:-translate-y-0.5 flex items-center justify-center gap-2">
-                                Lanjutkan <i className="ph-bold ph-arrow-right"></i>
+                            <button onClick={handleNext} className="w-full mt-8 bg-[#0084FF] hover:bg-[#0073e6] active:bg-[#0062c3] text-white py-4 rounded-xl text-[15px] font-bold transition-all flex items-center justify-center gap-2">
+                                Lanjutkan <span className="font-sans text-xl leading-none">&rarr;</span>
                             </button>
                         </div>
                     )}
